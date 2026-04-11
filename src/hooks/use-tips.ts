@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { subscribe, getTips, addTip, getTodayTips, getYesterdayTips, getWeekTips, getMonthTips, getYearTips, getDailyTotals, type TipEntry } from '@/lib/tip-store';
+import { subscribe, getTips, addTip, getTodayTips, getYesterdayTips, getWeekTips, getMonthTips, getYearTips, getDailyTotals, getRecentTips, getBestDay, getBestShift, type TipEntry } from '@/lib/tip-store';
 
 export function useTips() {
   const [, setVersion] = useState(0);
@@ -20,6 +20,7 @@ export function useTips() {
   const weekTotal = weekTips.reduce((s, t) => s + t.amount, 0);
   const monthTips = getMonthTips();
   const monthTotal = monthTips.reduce((s, t) => s + t.amount, 0);
+  const yearTips = getYearTips();
 
   return {
     allTips: getTips(),
@@ -33,8 +34,11 @@ export function useTips() {
     monthTotal,
     monthTips,
     monthTipCount: monthTips.length,
-    yearTips: getYearTips(),
+    yearTips,
     dailyTotals: getDailyTotals(7),
+    recentTips: getRecentTips(30),
+    bestDay: getBestDay(weekTips),
+    bestShift: getBestShift(weekTips),
     addTip: useCallback((entry: Omit<TipEntry, 'id' | 'createdAt'>) => addTip(entry), []),
   };
 }

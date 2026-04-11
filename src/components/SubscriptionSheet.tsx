@@ -11,32 +11,32 @@ const plans = [
   {
     id: 'free' as const,
     name: 'Free',
-    price: '$0',
-    period: '/forever',
+    price: { monthly: '$0', annual: '$0' },
+    period: { monthly: '/forever', annual: '/forever' },
     icon: Star,
     color: 'rgba(255,255,255,0.60)',
-    features: ['Log up to 30 tips/month', 'Basic weekly chart', 'Cash & card split'],
-    missing: ['Tax export (PDF & CSV)', 'Advanced reports', 'Ad-free experience', 'Priority support'],
+    features: ['Daily logging', 'Basic weekly chart', 'Cash & card split', '30-day history'],
+    missing: ['Unlimited history', 'Tax export (PDF & CSV)', 'Advanced reports & insights', 'Goal tracking', 'Multi-job tracking', 'Cloud backup', 'Ad-free experience', 'AI insights', 'Priority support'],
   },
   {
     id: 'pro' as const,
     name: 'Pro',
-    price: '$4.99',
-    period: '/month',
+    price: { monthly: '$4.99', annual: '$39' },
+    period: { monthly: '/month', annual: '/year' },
     icon: Zap,
     color: '#0A84FF',
     popular: true,
-    features: ['Unlimited tip logging', 'Full weekly & monthly charts', 'Cash & card split', 'Tax export (PDF & CSV)', 'Advanced reports'],
-    missing: ['Ad-free experience', 'Priority support'],
+    features: ['Unlimited tip logging', 'Unlimited history', 'Full weekly & monthly charts', 'Tax export (PDF & CSV)', 'Smart insights & trends', 'Goal tracking', 'Multi-job tracking', 'Cloud backup'],
+    missing: ['Ad-free experience', 'AI insights', 'Priority support'],
   },
   {
     id: 'premium' as const,
     name: 'Premium',
-    price: '$9.99',
-    period: '/month',
+    price: { monthly: '$9.99', annual: '$9.99' },
+    period: { monthly: '/month', annual: '/month' },
     icon: Crown,
     color: '#FFD60A',
-    features: ['Everything in Pro', 'Ad-free experience', 'Priority support', 'Custom categories', 'Multi-workplace', 'Data export & backup'],
+    features: ['Everything in Pro', 'Ad-free experience', 'AI-powered insights', 'Advanced analytics', 'Priority support', 'Custom categories', 'Data export & backup'],
     missing: [],
   },
 ];
@@ -44,6 +44,7 @@ const plans = [
 export function SubscriptionSheet({ open, onClose }: SubscriptionSheetProps) {
   const { plan: currentPlan, setPlan } = useSubscription();
   const [selected, setSelected] = useState<'free' | 'pro' | 'premium'>('pro');
+  const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
 
   if (!open) return null;
 
@@ -55,13 +56,34 @@ export function SubscriptionSheet({ open, onClose }: SubscriptionSheetProps) {
         <div className="w-9 h-1 rounded-full mx-auto mb-4" style={{ background: 'rgba(255,255,255,0.30)' }} />
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-[22px] font-bold text-foreground">Upgrade Plan</h2>
             <p className="text-[13px] text-muted-foreground">Unlock all features</p>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.12)' }}>
             <X className="w-4 h-4 text-muted-foreground" />
+          </button>
+        </div>
+
+        {/* Billing toggle */}
+        <div className="flex gap-1 p-1 rounded-xl mb-5" style={{ background: 'rgba(255,255,255,0.10)' }}>
+          <button
+            onClick={() => setBilling('monthly')}
+            className="flex-1 py-2 rounded-[10px] text-[13px] font-medium text-foreground transition-all"
+            style={{ background: billing === 'monthly' ? 'rgba(255,255,255,0.20)' : 'transparent' }}
+          >
+            Monthly
+          </button>
+          <button
+            onClick={() => setBilling('annual')}
+            className="flex-1 py-2 rounded-[10px] text-[13px] font-medium text-foreground transition-all relative"
+            style={{ background: billing === 'annual' ? 'rgba(255,255,255,0.20)' : 'transparent' }}
+          >
+            Annual
+            <span className="ml-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold" style={{ background: '#30D158', color: '#1C1C1E' }}>
+              SAVE 35%
+            </span>
           </button>
         </div>
 
@@ -99,8 +121,11 @@ export function SubscriptionSheet({ open, onClose }: SubscriptionSheetProps) {
                       )}
                     </div>
                     <div className="flex items-baseline gap-0.5">
-                      <span className="text-[22px] font-bold text-foreground">{p.price}</span>
-                      <span className="text-[13px] text-muted-foreground">{p.period}</span>
+                      <span className="text-[22px] font-bold text-foreground">{p.price[billing]}</span>
+                      <span className="text-[13px] text-muted-foreground">{p.period[billing]}</span>
+                      {billing === 'annual' && p.id === 'pro' && (
+                        <span className="ml-2 text-[11px] line-through text-muted-foreground">$59.88/yr</span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -139,7 +164,7 @@ export function SubscriptionSheet({ open, onClose }: SubscriptionSheetProps) {
         </button>
 
         <p className="text-center text-[11px] text-muted-foreground mt-3">
-          {selected === 'premium' ? 'Cancel anytime. Billed immediately.' : 'Cancel anytime. No charge during trial period.'}
+          {selected === 'premium' ? 'Cancel anytime. Billed immediately.' : selected === 'pro' ? 'Cancel anytime. No charge during trial period.' : ''}
         </p>
       </div>
     </div>

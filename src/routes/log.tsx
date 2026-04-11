@@ -20,6 +20,7 @@ function LogPage() {
   const [amount, setAmount] = useState('0');
   const [mode, setMode] = useState<'total' | 'cash' | 'card'>('total');
   const [shift, setShift] = useState<'morning' | 'afternoon' | 'evening'>('evening');
+  const [notes, setNotes] = useState('');
 
   const atLimit = !isPro && monthTipCount >= FREE_TIP_LIMIT;
 
@@ -44,6 +45,7 @@ function LogPage() {
       shift,
       workplace: 'Main Job',
       date: new Date().toISOString().split('T')[0],
+      notes: notes.trim() || undefined,
     });
     navigate({ to: '/' });
   };
@@ -60,15 +62,13 @@ function LogPage() {
         <p className="text-[13px] text-muted-foreground">{today}</p>
       </div>
 
-      {/* Tip limit warning for free users */}
       {!isPro && <TipLimitBanner used={monthTipCount} limit={FREE_TIP_LIMIT} />}
 
-      {/* Ad banner for free users */}
       <div className="mb-4">
         <AdBanner variant="inline" />
       </div>
 
-      <div className="flex gap-1 p-1 rounded-xl mb-6" style={{ background: 'rgba(255,255,255,0.10)' }}>
+      <div className="flex gap-1 p-1 rounded-xl mb-4" style={{ background: 'rgba(255,255,255,0.10)' }}>
         {modes.map(m => (
           <button key={m} onClick={() => setMode(m)}
             className="flex-1 py-2 rounded-[10px] text-sm font-medium text-foreground capitalize transition-all"
@@ -78,12 +78,12 @@ function LogPage() {
         ))}
       </div>
 
-      <div className="text-center mb-6">
+      <div className="text-center mb-4">
         <span className="text-[28px] font-light text-muted-foreground">$</span>
         <span className="text-[56px] font-extralight text-foreground tracking-tight">{amount}</span>
       </div>
 
-      <div className="flex gap-1 p-1 rounded-xl mb-6" style={{ background: 'rgba(255,255,255,0.10)' }}>
+      <div className="flex gap-1 p-1 rounded-xl mb-4" style={{ background: 'rgba(255,255,255,0.10)' }}>
         {shifts.map(s => (
           <button key={s} onClick={() => setShift(s)}
             className="flex-1 py-2 rounded-[10px] text-xs font-medium text-foreground capitalize transition-all"
@@ -93,11 +93,26 @@ function LogPage() {
         ))}
       </div>
 
+      {/* Notes field */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Add a note (optional)"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          className="w-full px-4 h-[50px] rounded-2xl text-sm text-foreground placeholder:text-muted-foreground outline-none"
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.10)',
+          }}
+        />
+      </div>
+
       <div className="grid grid-cols-3 gap-2 mb-5">
         {keys.map(key => (
           <button key={key} onClick={() => handleKey(key)}
-            className={`glass-numpad-key flex items-center justify-center h-16 text-2xl text-foreground font-normal ${key === '0' ? 'col-span-2' : ''}`}>
-            {key === 'del' ? <Delete className="w-6 h-6" /> : key}
+            className={`glass-numpad-key flex items-center justify-center h-14 text-xl text-foreground font-normal ${key === '0' ? 'col-span-2' : ''}`}>
+            {key === 'del' ? <Delete className="w-5 h-5" /> : key}
           </button>
         ))}
       </div>

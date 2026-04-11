@@ -7,6 +7,7 @@ export interface TipEntry {
   shift: 'morning' | 'afternoon' | 'evening';
   workplace: string;
   date: string; // ISO date string
+  notes?: string;
   createdAt: string;
 }
 
@@ -78,6 +79,14 @@ export function getYearTips(year?: number) {
   return tips.filter(t => t.date.startsWith(String(y)));
 }
 
+/** Get tips within the last N days (for free plan 30-day limit) */
+export function getRecentTips(days: number) {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  const cutoffStr = cutoff.toISOString().split('T')[0];
+  return tips.filter(t => t.date >= cutoffStr);
+}
+
 export function getDailyTotals(days: number) {
   const result: { date: string; total: number; day: string }[] = [];
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -90,4 +99,28 @@ export function getDailyTotals(days: number) {
     result.push({ date: dateStr, total, day: dayNames[d.getDay()] });
   }
   return result;
+}
+
+/** Get best earning day from tips */
+export function getBestDay(tipList: TipEntry[]) {
+  const byDate: Record<string, number> = {};
+  tipList.forEach(t => { byDate[t.date] = (byDate[t.date] || 0) + t.amount; });
+  let bestDate = '';
+  let bestTotal = 0;
+  for (const [date, total] of Object.entries(byDate)) {
+    if (total > bestTotal) { bestDate = date; bestTotal = total; }
+  }
+  return { date: bestDate, total: bestTotal };
+}
+
+/** Get best shift type */
+export function getBestShift(tipList: TipEntry[]) {
+  const byShift: Record<string, number> = {};
+  tipList.forEach(t => { byShift[t.shift] = (byShift[t.shift] || 0) + t.amount; });
+  let best = 'evening';
+  let bestTotal = 0;
+  for (const [shift, total] of Object.entries(byShift)) {
+    if (total > bestTotal) { best = shift; bestTotal = total; }
+  }
+  return { shift: best, total: bestTotal };
 }

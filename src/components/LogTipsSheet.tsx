@@ -18,6 +18,7 @@ export function LogTipsSheet({ open, onClose }: LogTipsSheetProps) {
   const [mode, setMode] = useState<'total' | 'cash' | 'card'>('total');
   const [shift, setShift] = useState<'morning' | 'afternoon' | 'evening'>('evening');
   const [workplace] = useState('Main Job');
+  const [notes, setNotes] = useState('');
 
   if (!open) return null;
 
@@ -48,9 +49,11 @@ export function LogTipsSheet({ open, onClose }: LogTipsSheetProps) {
       shift,
       workplace,
       date: new Date().toISOString().split('T')[0],
+      notes: notes.trim() || undefined,
     });
 
     setAmount('0');
+    setNotes('');
     onClose();
   };
 
@@ -86,7 +89,7 @@ export function LogTipsSheet({ open, onClose }: LogTipsSheetProps) {
           {/* Tip limit warning */}
           {!isPro && <TipLimitBanner used={monthTipCount} limit={FREE_TIP_LIMIT} />}
 
-          <div className="flex gap-1 p-1 rounded-xl mb-6" style={{ background: 'rgba(255,255,255,0.10)' }}>
+          <div className="flex gap-1 p-1 rounded-xl mb-4" style={{ background: 'rgba(255,255,255,0.10)' }}>
             {modes.map(m => (
               <button
                 key={m}
@@ -99,7 +102,7 @@ export function LogTipsSheet({ open, onClose }: LogTipsSheetProps) {
             ))}
           </div>
 
-          <div className="text-center mb-6">
+          <div className="text-center mb-4">
             <span className="text-[28px] font-light text-muted-foreground">$</span>
             <span className="text-[56px] font-extralight text-foreground tracking-tight">{amount}</span>
           </div>
@@ -117,20 +120,36 @@ export function LogTipsSheet({ open, onClose }: LogTipsSheetProps) {
             ))}
           </div>
 
-          <div className="glass-pill flex items-center justify-between px-4 h-[50px] mb-5">
+          <div className="glass-pill flex items-center justify-between px-4 h-[50px] mb-3">
             <span className="text-sm text-muted-foreground">Workplace</span>
             <span className="text-sm text-foreground">{workplace} ›</span>
           </div>
 
+          {/* Notes field */}
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Add a note (optional)"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="w-full px-4 h-[50px] rounded-2xl text-sm text-foreground placeholder:text-muted-foreground outline-none"
+              style={{
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.10)',
+              }}
+            />
+          </div>
+
+          {/* Numpad */}
           <div className="grid grid-cols-3 gap-2 mb-5">
             {keys.map(key => (
               <button
                 key={key}
                 onClick={() => handleKey(key)}
-                className={`glass-numpad-key flex items-center justify-center h-16 text-2xl text-foreground font-normal ${key === '0' ? 'col-span-2' : ''}`}
+                className={`glass-numpad-key flex items-center justify-center h-14 text-xl text-foreground font-normal ${key === '0' ? 'col-span-2' : ''}`}
                 style={key === 'del' ? { background: 'rgba(255,255,255,0.08)' } : undefined}
               >
-                {key === 'del' ? <Delete className="w-6 h-6" /> : key}
+                {key === 'del' ? <Delete className="w-5 h-5" /> : key}
               </button>
             ))}
           </div>

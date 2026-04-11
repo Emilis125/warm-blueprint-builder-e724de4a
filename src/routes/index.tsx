@@ -5,7 +5,9 @@ import { WeekChart } from '@/components/WeekChart';
 import { LogTipsSheet } from '@/components/LogTipsSheet';
 import { TabBar } from '@/components/TabBar';
 import { AdBanner } from '@/components/AdBanner';
+import { GoalTracker } from '@/components/GoalTracker';
 import { useTips } from '@/hooks/use-tips';
+import { useSubscription } from '@/hooks/use-subscription';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 export const Route = createFileRoute('/')({
@@ -20,7 +22,8 @@ export const Route = createFileRoute('/')({
 
 function Dashboard() {
   const [logOpen, setLogOpen] = useState(false);
-  const { todayTotal, todayCash, todayCard, diff, dailyTotals, yesterdayTotal } = useTips();
+  const { todayTotal, todayCash, todayCard, diff, dailyTotals, yesterdayTotal, weekTotal, monthTotal } = useTips();
+  const { isPro } = useSubscription();
 
   const today = new Date();
   const dayStr = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
@@ -57,12 +60,12 @@ function Dashboard() {
         <GlassCard className="animate-fade-in-up stagger-2">
           <p className="text-[11px] font-semibold tracking-wider text-muted-foreground mb-1">CASH</p>
           <p className="text-[22px] font-semibold text-foreground">${todayCash.toFixed(2)}</p>
-          {cashPercent > 0 && <p className="text-[12px] mt-1" style={{ color: '#30D158' }}>+{cashPercent}%</p>}
+          {cashPercent > 0 && <p className="text-[12px] mt-1" style={{ color: '#30D158' }}>{cashPercent}%</p>}
         </GlassCard>
         <GlassCard className="animate-fade-in-up stagger-2">
           <p className="text-[11px] font-semibold tracking-wider text-muted-foreground mb-1">CARD</p>
           <p className="text-[22px] font-semibold text-foreground">${todayCard.toFixed(2)}</p>
-          {cardPercent > 0 && <p className="text-[12px] mt-1" style={{ color: '#30D158' }}>+{cardPercent}%</p>}
+          {cardPercent > 0 && <p className="text-[12px] mt-1" style={{ color: '#30D158' }}>{cardPercent}%</p>}
         </GlassCard>
       </div>
 
@@ -73,6 +76,11 @@ function Dashboard() {
 
       {/* Week Chart */}
       <WeekChart data={dailyTotals} />
+
+      {/* Goal Tracker */}
+      <div className="mt-5">
+        <GoalTracker weekTotal={weekTotal} monthTotal={monthTotal} isPro={isPro} />
+      </div>
 
       {/* Log Tips Button */}
       <button
