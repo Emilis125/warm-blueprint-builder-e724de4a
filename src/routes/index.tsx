@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
+import { RequireAuth } from '@/components/RequireAuth';
 import { GlassCard } from '@/components/GlassCard';
 import { WeekChart } from '@/components/WeekChart';
 import { LogTipsSheet } from '@/components/LogTipsSheet';
@@ -12,7 +13,7 @@ import { useSettings } from '@/hooks/use-settings';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 export const Route = createFileRoute('/')({
-  component: Dashboard,
+  component: () => <RequireAuth><Dashboard /></RequireAuth>,
   head: () => ({
     meta: [
       { title: 'TipTracker Pro — Dashboard' },

@@ -1,4 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { RequireAuth } from '@/components/RequireAuth';
 import { useState } from 'react';
 import { GlassCard } from '@/components/GlassCard';
 import { TabBar } from '@/components/TabBar';
@@ -11,12 +12,13 @@ import { PrioritySupport } from '@/components/PrioritySupport';
 import { useSubscription } from '@/hooks/use-subscription';
 import { useSettings } from '@/hooks/use-settings';
 import { useTips } from '@/hooks/use-tips';
-import { getTips } from '@/lib/tip-store';
-import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Tag, Database, Download, CheckCircle, Headphones } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
+import { supabase } from '@/integrations/supabase/client';
+import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Tag, Database, Download, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/profile')({
-  component: ProfilePage,
+  component: () => <RequireAuth><ProfilePage /></RequireAuth>,
   head: () => ({
     meta: [
       { title: 'TipTracker Pro — Profile' },
@@ -25,13 +27,12 @@ export const Route = createFileRoute('/profile')({
   }),
 });
 
-function downloadBackup() {
-  const tips = getTips();
+function downloadBackup(allTips: any[]) {
   const data = {
     exportDate: new Date().toISOString(),
     version: '1.0',
-    tipCount: tips.length,
-    tips,
+    tipCount: allTips.length,
+    tips: allTips,
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -45,13 +46,15 @@ function downloadBackup() {
 }
 
 function ProfilePage() {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [subOpen, setSubOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [wpOpen, setWpOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
   const [backupDone, setBackupDone] = useState(false);
   const { plan, isPro, isPremium } = useSubscription();
-  const { monthTipCount } = useTips();
+  const { monthTipCount, allTips } = useTips();
   const { workplaces, addWorkplace, removeWorkplace } = useSettings();
   const [selectedWp, setSelectedWp] = useState(workplaces[0] || 'Main Job');
 
@@ -59,16 +62,18 @@ function ProfilePage() {
   const planColors = { free: 'rgba(255,255,255,0.60)', pro: '#0A84FF', premium: '#FFD60A' };
 
   const handleBackup = () => {
-    downloadBackup();
+    downloadBackup(allTips);
     setBackupDone(true);
     toast.success('Backup downloaded!', { description: 'Your tip data has been exported as a JSON file.' });
     setTimeout(() => setBackupDone(false), 3000);
   };
 
   const handleCloudBackup = () => {
-    // Simulate cloud backup
-    toast.success('Cloud backup complete!', { description: 'All your tip data is safely stored in the cloud.' });
+    toast.success('Cloud backup active!', { description: 'Your data is automatically synced to the cloud via Lovable Cloud.' });
   };
+
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
+  const initials = displayName.slice(0, 2).toUpperCase();
 
   const settings = [
     { icon: Bell, label: 'Notifications', sub: 'Daily reminder at 11:00 PM', onClick: () => setNotifOpen(true) },
@@ -87,10 +92,10 @@ function ProfilePage() {
       {/* Avatar */}
       <div className="flex flex-col items-center mb-8 animate-fade-in-up stagger-1">
         <div className="w-16 h-16 rounded-full glass flex items-center justify-center mb-3">
-          <span className="text-xl font-semibold text-foreground">JD</span>
+          <span className="text-xl font-semibold text-foreground">{initials}</span>
         </div>
-        <p className="text-[17px] font-semibold text-foreground">John Doe</p>
-        <p className="text-[15px] text-muted-foreground">john@example.com</p>
+        <p className="text-[17px] font-semibold text-foreground">{displayName}</p>
+        <p className="text-[15px] text-muted-foreground">{user?.email || ''}</p>
         <span className="mt-2 px-4 py-1 rounded-full text-[13px] font-medium flex items-center gap-1.5"
           style={{
             background: plan === 'premium' ? 'rgba(255,214,10,0.15)' : plan === 'pro' ? 'rgba(10,132,255,0.15)' : 'rgba(255,255,255,0.08)',
@@ -178,7 +183,10 @@ function ProfilePage() {
 
       {/* Sign Out */}
       <GlassCard className="!p-0 animate-fade-in-up stagger-3">
-        <button className="w-full flex items-center gap-4 px-5 py-4" onClick={() => toast.info('Sign out coming soon with authentication!')}>
+        <button className="w-full flex items-center gap-4 px-5 py-4" onClick={async () => {
+          await signOut();
+          navigate({ to: '/login' });
+        }}>
           <LogOut className="w-5 h-5" style={{ color: '#FF453A' }} />
           <span className="text-[15px] font-medium" style={{ color: '#FF453A' }}>Sign Out</span>
         </button>

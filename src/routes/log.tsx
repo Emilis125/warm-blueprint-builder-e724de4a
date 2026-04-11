@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { RequireAuth } from '@/components/RequireAuth';
 import { useState } from 'react';
 import { Delete } from 'lucide-react';
 import { TabBar } from '@/components/TabBar';
@@ -12,7 +13,7 @@ import { useSettings } from '@/hooks/use-settings';
 const FREE_TIP_LIMIT = 30;
 
 export const Route = createFileRoute('/log')({
-  component: LogPage,
+  component: () => <RequireAuth><LogPage /></RequireAuth>,
 });
 
 function LogPage() {

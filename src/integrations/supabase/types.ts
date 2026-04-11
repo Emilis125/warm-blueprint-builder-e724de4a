@@ -14,7 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tips: {
+        Row: {
+          amount: number
+          card_amount: number
+          cash_amount: number
+          created_at: string
+          date: string
+          id: string
+          notes: string | null
+          shift: string
+          updated_at: string
+          user_id: string
+          workplace: string
+        }
+        Insert: {
+          amount: number
+          card_amount?: number
+          cash_amount?: number
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          shift: string
+          updated_at?: string
+          user_id: string
+          workplace?: string
+        }
+        Update: {
+          amount?: number
+          card_amount?: number
+          cash_amount?: number
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          shift?: string
+          updated_at?: string
+          user_id?: string
+          workplace?: string
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          categories: string[]
+          created_at: string
+          id: string
+          monthly_goal: number
+          updated_at: string
+          user_id: string
+          weekly_goal: number
+          workplaces: string[]
+        }
+        Insert: {
+          categories?: string[]
+          created_at?: string
+          id?: string
+          monthly_goal?: number
+          updated_at?: string
+          user_id: string
+          weekly_goal?: number
+          workplaces?: string[]
+        }
+        Update: {
+          categories?: string[]
+          created_at?: string
+          id?: string
+          monthly_goal?: number
+          updated_at?: string
+          user_id?: string
+          weekly_goal?: number
+          workplaces?: string[]
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
