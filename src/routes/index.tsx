@@ -4,6 +4,7 @@ import { GlassCard } from '@/components/GlassCard';
 import { WeekChart } from '@/components/WeekChart';
 import { LogTipsSheet } from '@/components/LogTipsSheet';
 import { TabBar } from '@/components/TabBar';
+import { AdBanner } from '@/components/AdBanner';
 import { useTips } from '@/hooks/use-tips';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
@@ -65,6 +66,11 @@ function Dashboard() {
         </GlassCard>
       </div>
 
+      {/* Ad banner */}
+      <div className="mb-5 animate-fade-in-up stagger-3">
+        <AdBanner variant="inline" />
+      </div>
+
       {/* Week Chart */}
       <WeekChart data={dailyTotals} />
 
@@ -80,6 +86,9 @@ function Dashboard() {
       >
         Log Tips +
       </button>
+
+      {/* Sticky upgrade banner */}
+      <AdBanner variant="sticky" />
 
       <LogTipsSheet open={logOpen} onClose={() => setLogOpen(false)} />
       <TabBar />
