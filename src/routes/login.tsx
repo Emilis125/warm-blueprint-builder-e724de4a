@@ -49,21 +49,24 @@ function LoginPage() {
     }
   };
 
-  const handleGoogleAuth = async () => {
+  const handleOAuth = async (provider: 'google' | 'apple') => {
     try {
-      const result = await lovable.auth.signInWithOAuth('google', {
+      const result = await lovable.auth.signInWithOAuth(provider, {
         redirect_uri: window.location.origin,
       });
       if (result.error) {
-        toast.error('Google sign-in failed');
+        toast.error(`${provider === 'google' ? 'Google' : 'Apple'} sign-in failed`);
         return;
       }
       if (result.redirected) return;
       navigate({ to: '/' });
     } catch {
-      toast.error('Google sign-in failed');
+      toast.error(`${provider === 'google' ? 'Google' : 'Apple'} sign-in failed`);
     }
   };
+
+  const handleGoogleAuth = () => handleOAuth('google');
+  const handleAppleAuth = () => handleOAuth('apple');
 
   return (
     <div className="min-h-screen max-w-[430px] mx-auto px-4 flex flex-col items-center justify-center">
