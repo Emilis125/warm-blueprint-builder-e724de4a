@@ -7,6 +7,11 @@ export function useSettings() {
     settingsStore.getWorkplaces,
     settingsStore.getWorkplaces,
   );
+  const categories = useSyncExternalStore(
+    settingsStore.subscribe,
+    settingsStore.getCategories,
+    settingsStore.getCategories,
+  );
   const weeklyGoal = useSyncExternalStore(
     settingsStore.subscribe,
     settingsStore.getWeeklyGoal,
@@ -22,6 +27,9 @@ export function useSettings() {
     workplaces,
     addWorkplace: settingsStore.addWorkplace,
     removeWorkplace: settingsStore.removeWorkplace,
+    categories,
+    addCategory: settingsStore.addCategory,
+    removeCategory: settingsStore.removeCategory,
     weeklyGoal,
     monthlyGoal,
     setWeeklyGoal: settingsStore.setWeeklyGoal,

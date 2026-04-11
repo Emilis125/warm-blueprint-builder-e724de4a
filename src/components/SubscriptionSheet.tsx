@@ -163,11 +163,11 @@ export function SubscriptionSheet({ open, onClose }: SubscriptionSheetProps) {
             boxShadow: selected === 'premium' ? '0 0 24px rgba(255,214,10,0.50)' : '0 0 24px rgba(10,132,255,0.50)',
           }}
         >
-          {currentPlan === selected ? 'Current Plan' : selected === 'free' ? 'Downgrade to Free' : selected === 'pro' ? 'Start 7-Day Free Trial' : 'Subscribe to Premium'}
+          {currentPlan === selected ? 'Current Plan' : selected === 'free' ? 'Downgrade to Free' : selected === 'pro' ? 'Subscribe to Pro' : 'Subscribe to Premium'}
         </button>
 
         <p className="text-center text-[11px] text-muted-foreground mt-3">
-          {selected === 'premium' ? 'Cancel anytime. Billed immediately.' : selected === 'pro' ? 'Cancel anytime. No charge during trial period.' : ''}
+          {selected === 'premium' ? 'Cancel anytime. Billed immediately.' : selected === 'pro' ? 'Cancel anytime. Billed immediately.' : ''}
         </p>
       </div>
     </div>

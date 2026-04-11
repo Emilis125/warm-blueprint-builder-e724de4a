@@ -4,6 +4,8 @@ import { GlassCard } from '@/components/GlassCard';
 import { TabBar } from '@/components/TabBar';
 import { AdBanner } from '@/components/AdBanner';
 import { SmartInsights } from '@/components/SmartInsights';
+import { AIInsights } from '@/components/AIInsights';
+import { AdvancedAnalytics } from '@/components/AdvancedAnalytics';
 import { useTips } from '@/hooks/use-tips';
 import { useSubscription } from '@/hooks/use-subscription';
 import { UpgradePaywall } from '@/components/UpgradePaywall';
@@ -20,7 +22,7 @@ export const Route = createFileRoute('/reports')({
 
 function ReportsPage() {
   const [period, setPeriod] = useState<'week' | 'month' | 'year'>('week');
-  const { weekTips, monthTips, yearTips, weekTotal, monthTotal, bestDay, bestShift } = useTips();
+  const { weekTips, monthTips, yearTips, weekTotal, monthTotal, bestDay, bestShift, allTips } = useTips();
   const { isPro, isPremium } = useSubscription();
 
   const tips = period === 'week' ? weekTips : period === 'month' ? monthTips : yearTips;
@@ -130,6 +132,21 @@ function ReportsPage() {
           weekTipCount={weekTips.length}
           isPro={isPro}
         />
+      </div>
+
+      {/* AI Insights — Premium feature */}
+      <div className="mb-5">
+        <AIInsights
+          tips={allTips}
+          weekTotal={weekTotal}
+          monthTotal={monthTotal}
+          isPremium={isPremium}
+        />
+      </div>
+
+      {/* Advanced Analytics — Premium feature */}
+      <div className="mb-5">
+        <AdvancedAnalytics tips={allTips} isPremium={isPremium} />
       </div>
 
       {/* Shift breakdown — Premium feature */}

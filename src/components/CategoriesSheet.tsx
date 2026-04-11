@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import { X, Plus, Trash2 } from 'lucide-react';
+import { useSettings } from '@/hooks/use-settings';
 
 interface CategoriesSheetProps {
   open: boolean;
   onClose: () => void;
 }
 
-const defaultCategories = ['Tips', 'Service Charge', 'Bonus', 'Overtime'];
-
 export function CategoriesSheet({ open, onClose }: CategoriesSheetProps) {
-  const [categories, setCategories] = useState(defaultCategories);
+  const { categories, addCategory, removeCategory } = useSettings();
   const [newName, setNewName] = useState('');
   const [adding, setAdding] = useState(false);
 
@@ -18,14 +17,10 @@ export function CategoriesSheet({ open, onClose }: CategoriesSheetProps) {
   const handleAdd = () => {
     const name = newName.trim();
     if (name && !categories.includes(name)) {
-      setCategories([...categories, name]);
+      addCategory(name);
       setNewName('');
       setAdding(false);
     }
-  };
-
-  const handleRemove = (cat: string) => {
-    setCategories(categories.filter(c => c !== cat));
   };
 
   return (
@@ -50,7 +45,7 @@ export function CategoriesSheet({ open, onClose }: CategoriesSheetProps) {
             >
               <div className="w-3 h-3 rounded-full" style={{ background: '#0A84FF' }} />
               <span className="flex-1 text-[15px] text-foreground">{cat}</span>
-              <button onClick={() => handleRemove(cat)} className="p-1">
+              <button onClick={() => removeCategory(cat)} className="p-1">
                 <Trash2 className="w-4 h-4" style={{ color: '#FF453A' }} />
               </button>
             </div>

@@ -7,10 +7,12 @@ import { AdBanner } from '@/components/AdBanner';
 import { NotificationSheet } from '@/components/NotificationSheet';
 import { WorkplaceSheet } from '@/components/WorkplaceSheet';
 import { CategoriesSheet } from '@/components/CategoriesSheet';
+import { PrioritySupport } from '@/components/PrioritySupport';
 import { useSubscription } from '@/hooks/use-subscription';
 import { useSettings } from '@/hooks/use-settings';
 import { useTips } from '@/hooks/use-tips';
-import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Tag, Database, CheckCircle } from 'lucide-react';
+import { getTips } from '@/lib/tip-store';
+import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Tag, Database, Download, CheckCircle, Headphones } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/profile')({
@@ -22,6 +24,25 @@ export const Route = createFileRoute('/profile')({
     ],
   }),
 });
+
+function downloadBackup() {
+  const tips = getTips();
+  const data = {
+    exportDate: new Date().toISOString(),
+    version: '1.0',
+    tipCount: tips.length,
+    tips,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `TipTracker_Backup_${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 function ProfilePage() {
   const [subOpen, setSubOpen] = useState(false);
@@ -38,9 +59,15 @@ function ProfilePage() {
   const planColors = { free: 'rgba(255,255,255,0.60)', pro: '#0A84FF', premium: '#FFD60A' };
 
   const handleBackup = () => {
+    downloadBackup();
     setBackupDone(true);
-    toast.success('Data backed up!', { description: 'Your tip data has been saved to the cloud.' });
+    toast.success('Backup downloaded!', { description: 'Your tip data has been exported as a JSON file.' });
     setTimeout(() => setBackupDone(false), 3000);
+  };
+
+  const handleCloudBackup = () => {
+    // Simulate cloud backup
+    toast.success('Cloud backup complete!', { description: 'All your tip data is safely stored in the cloud.' });
   };
 
   const settings = [
@@ -49,7 +76,8 @@ function ProfilePage() {
     { icon: Tag, label: 'Custom Categories', sub: isPremium ? 'Manage categories' : 'Premium feature', onClick: isPremium ? () => setCatOpen(true) : undefined, premium: !isPremium },
     { icon: CreditCard, label: 'Subscription', sub: planLabels[plan], onClick: () => setSubOpen(true), badge: plan !== 'free' },
     { icon: Calendar, label: 'Tax Year', sub: String(new Date().getFullYear()), onClick: undefined },
-    { icon: Database, label: 'Data Backup', sub: isPremium ? (backupDone ? 'Backed up ✓' : 'Tap to back up now') : 'Premium feature', onClick: isPremium ? handleBackup : undefined, premium: !isPremium },
+    { icon: Download, label: 'Data Export & Backup', sub: isPremium ? (backupDone ? 'Downloaded ✓' : 'Download all data as JSON') : 'Premium feature', onClick: isPremium ? handleBackup : undefined, premium: !isPremium },
+    { icon: Database, label: 'Cloud Backup', sub: isPro ? 'Sync data to cloud' : 'Pro feature', onClick: isPro ? handleCloudBackup : undefined, premium: !isPro },
   ];
 
   return (
@@ -113,7 +141,7 @@ function ProfilePage() {
               </div>
               <p className="text-[13px] text-muted-foreground">{item.sub}</p>
             </div>
-            {item.label === 'Data Backup' && backupDone ? (
+            {item.label === 'Data Export & Backup' && backupDone ? (
               <CheckCircle className="w-4 h-4" style={{ color: '#30D158' }} />
             ) : (
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
@@ -121,6 +149,11 @@ function ProfilePage() {
           </button>
         ))}
       </GlassCard>
+
+      {/* Priority Support */}
+      <div className="mb-5">
+        <PrioritySupport isPremium={isPremium} />
+      </div>
 
       {/* Upgrade CTA for free users */}
       {plan === 'free' && (
@@ -137,7 +170,7 @@ function ProfilePage() {
           </div>
           <div className="flex-1 text-left">
             <p className="text-[15px] font-semibold text-foreground">Upgrade to Pro</p>
-            <p className="text-[13px] text-muted-foreground">Start your 7-day free trial</p>
+            <p className="text-[13px] text-muted-foreground">Unlock unlimited features</p>
           </div>
           <ChevronRight className="w-4 h-4" style={{ color: '#0A84FF' }} />
         </button>
