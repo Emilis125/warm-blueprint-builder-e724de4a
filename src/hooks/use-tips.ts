@@ -32,6 +32,7 @@ export function useTips() {
     weekTips,
     monthTotal,
     monthTips,
+    monthTipCount: monthTips.length,
     yearTips: getYearTips(),
     dailyTotals: getDailyTotals(7),
     addTip: useCallback((entry: Omit<TipEntry, 'id' | 'createdAt'>) => addTip(entry), []),

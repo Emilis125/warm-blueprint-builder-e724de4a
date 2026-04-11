@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { X, Delete } from 'lucide-react';
 import { useTips } from '@/hooks/use-tips';
+import { useSubscription } from '@/hooks/use-subscription';
+import { TipLimitBanner } from './TipLimitBanner';
+
+const FREE_TIP_LIMIT = 30;
 
 interface LogTipsSheetProps {
   open: boolean;
@@ -8,13 +12,16 @@ interface LogTipsSheetProps {
 }
 
 export function LogTipsSheet({ open, onClose }: LogTipsSheetProps) {
-  const { addTip } = useTips();
+  const { addTip, monthTipCount } = useTips();
+  const { isPro } = useSubscription();
   const [amount, setAmount] = useState('0');
   const [mode, setMode] = useState<'total' | 'cash' | 'card'>('total');
   const [shift, setShift] = useState<'morning' | 'afternoon' | 'evening'>('evening');
   const [workplace] = useState('Main Job');
 
   if (!open) return null;
+
+  const atLimit = !isPro && monthTipCount >= FREE_TIP_LIMIT;
 
   const handleKey = (key: string) => {
     if (key === 'del') {
@@ -27,6 +34,7 @@ export function LogTipsSheet({ open, onClose }: LogTipsSheetProps) {
   };
 
   const handleSave = () => {
+    if (atLimit) return;
     const val = parseFloat(amount) || 0;
     if (val <= 0) return;
     const cashAmount = mode === 'cash' ? val : mode === 'total' ? val * 0.4 : 0;
@@ -61,13 +69,11 @@ export function LogTipsSheet({ open, onClose }: LogTipsSheetProps) {
         style={{ maxHeight: '92vh' }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Drag handle */}
         <div className="flex justify-center pt-3 pb-1">
           <div className="w-9 h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.3)' }} />
         </div>
 
         <div className="px-5 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(92vh - 20px)' }}>
-          {/* Header */}
           <div className="flex items-center justify-between mb-2">
             <button onClick={onClose} className="text-muted-foreground text-sm">Cancel</button>
             <div className="text-center">
@@ -77,7 +83,9 @@ export function LogTipsSheet({ open, onClose }: LogTipsSheetProps) {
             <div className="w-12" />
           </div>
 
-          {/* Mode selector */}
+          {/* Tip limit warning */}
+          {!isPro && <TipLimitBanner used={monthTipCount} limit={FREE_TIP_LIMIT} />}
+
           <div className="flex gap-1 p-1 rounded-xl mb-6" style={{ background: 'rgba(255,255,255,0.10)' }}>
             {modes.map(m => (
               <button
@@ -91,13 +99,11 @@ export function LogTipsSheet({ open, onClose }: LogTipsSheetProps) {
             ))}
           </div>
 
-          {/* Amount */}
           <div className="text-center mb-6">
             <span className="text-[28px] font-light text-muted-foreground">$</span>
             <span className="text-[56px] font-extralight text-foreground tracking-tight">{amount}</span>
           </div>
 
-          {/* Shift selector */}
           <div className="flex gap-1 p-1 rounded-xl mb-4" style={{ background: 'rgba(255,255,255,0.10)' }}>
             {shifts.map(s => (
               <button
@@ -111,13 +117,11 @@ export function LogTipsSheet({ open, onClose }: LogTipsSheetProps) {
             ))}
           </div>
 
-          {/* Workplace */}
           <div className="glass-pill flex items-center justify-between px-4 h-[50px] mb-5">
             <span className="text-sm text-muted-foreground">Workplace</span>
             <span className="text-sm text-foreground">{workplace} ›</span>
           </div>
 
-          {/* Numpad */}
           <div className="grid grid-cols-3 gap-2 mb-5">
             {keys.map(key => (
               <button
@@ -131,9 +135,12 @@ export function LogTipsSheet({ open, onClose }: LogTipsSheetProps) {
             ))}
           </div>
 
-          {/* Save */}
-          <button onClick={handleSave} className="btn-ios-blue w-full h-[54px] text-[17px] font-semibold">
-            Save Tips
+          <button
+            onClick={handleSave}
+            className="btn-ios-blue w-full h-[54px] text-[17px] font-semibold"
+            style={atLimit ? { opacity: 0.4, pointerEvents: 'none' } : undefined}
+          >
+            {atLimit ? 'Tip Limit Reached' : 'Save Tips'}
           </button>
         </div>
       </div>
