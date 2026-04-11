@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { GlassCard } from '@/components/GlassCard';
 import { TabBar } from '@/components/TabBar';
@@ -11,8 +11,9 @@ import { PrioritySupport } from '@/components/PrioritySupport';
 import { useSubscription } from '@/hooks/use-subscription';
 import { useSettings } from '@/hooks/use-settings';
 import { useTips } from '@/hooks/use-tips';
-import { getTips } from '@/lib/tip-store';
-import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Tag, Database, Download, CheckCircle, Headphones } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
+import { supabase } from '@/integrations/supabase/client';
+import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Tag, Database, Download, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/profile')({
@@ -25,13 +26,12 @@ export const Route = createFileRoute('/profile')({
   }),
 });
 
-function downloadBackup() {
-  const tips = getTips();
+function downloadBackup(allTips: any[]) {
   const data = {
     exportDate: new Date().toISOString(),
     version: '1.0',
-    tipCount: tips.length,
-    tips,
+    tipCount: allTips.length,
+    tips: allTips,
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -45,6 +45,8 @@ function downloadBackup() {
 }
 
 function ProfilePage() {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [subOpen, setSubOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [wpOpen, setWpOpen] = useState(false);
