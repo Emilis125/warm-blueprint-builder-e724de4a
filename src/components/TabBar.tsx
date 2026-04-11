@@ -2,12 +2,12 @@ import { Link, useLocation } from '@tanstack/react-router';
 import { Home, BarChart3, Plus, FileText, User } from 'lucide-react';
 
 const tabs = [
-  { to: '/', icon: Home, label: 'Home' },
-  { to: '/reports', icon: BarChart3, label: 'Reports' },
-  { to: '/log', icon: Plus, label: 'Log', center: true },
-  { to: '/tax', icon: FileText, label: 'Tax' },
-  { to: '/profile', icon: User, label: 'Profile' },
-] as const;
+  { to: '/' as const, icon: Home, label: 'Home', center: false },
+  { to: '/reports' as const, icon: BarChart3, label: 'Reports', center: false },
+  { to: '/log' as const, icon: Plus, label: 'Log', center: true },
+  { to: '/tax' as const, icon: FileText, label: 'Tax', center: false },
+  { to: '/profile' as const, icon: User, label: 'Profile', center: false },
+];
 
 export function TabBar() {
   const location = useLocation();
