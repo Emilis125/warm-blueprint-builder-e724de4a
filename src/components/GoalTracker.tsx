@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Crown, Target } from 'lucide-react';
+import { Crown, Target, Pencil, Check } from 'lucide-react';
 import { GlassCard } from './GlassCard';
 import { SubscriptionSheet } from './SubscriptionSheet';
 
@@ -7,14 +7,19 @@ interface GoalTrackerProps {
   weekTotal: number;
   monthTotal: number;
   isPro: boolean;
+  weeklyGoal: number;
+  monthlyGoal: number;
+  onSetWeeklyGoal: (val: number) => void;
+  onSetMonthlyGoal: (val: number) => void;
 }
 
-export function GoalTracker({ weekTotal, monthTotal, isPro }: GoalTrackerProps) {
+export function GoalTracker({ weekTotal, monthTotal, isPro, weeklyGoal, monthlyGoal, onSetWeeklyGoal, onSetMonthlyGoal }: GoalTrackerProps) {
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [editingWeekly, setEditingWeekly] = useState(false);
+  const [editingMonthly, setEditingMonthly] = useState(false);
+  const [weekInput, setWeekInput] = useState(String(weeklyGoal));
+  const [monthInput, setMonthInput] = useState(String(monthlyGoal));
 
-  // Default goals (would be user-configurable with backend)
-  const weeklyGoal = 700;
-  const monthlyGoal = 3000;
   const weekPct = Math.min((weekTotal / weeklyGoal) * 100, 100);
   const monthPct = Math.min((monthTotal / monthlyGoal) * 100, 100);
 
@@ -42,6 +47,18 @@ export function GoalTracker({ weekTotal, monthTotal, isPro }: GoalTrackerProps) 
     );
   }
 
+  const saveWeekly = () => {
+    const val = parseFloat(weekInput);
+    if (val > 0) onSetWeeklyGoal(val);
+    setEditingWeekly(false);
+  };
+
+  const saveMonthly = () => {
+    const val = parseFloat(monthInput);
+    if (val > 0) onSetMonthlyGoal(val);
+    setEditingMonthly(false);
+  };
+
   return (
     <GlassCard className="animate-fade-in-up stagger-4">
       <div className="flex items-center gap-2 mb-4">
@@ -53,7 +70,29 @@ export function GoalTracker({ weekTotal, monthTotal, isPro }: GoalTrackerProps) 
       <div className="mb-4">
         <div className="flex items-center justify-between mb-1.5">
           <span className="text-[13px] text-muted-foreground">Weekly Goal</span>
-          <span className="text-[13px] font-medium text-foreground">${weekTotal.toFixed(0)} / ${weeklyGoal}</span>
+          <div className="flex items-center gap-1.5">
+            {editingWeekly ? (
+              <>
+                <input
+                  type="number"
+                  value={weekInput}
+                  onChange={(e) => setWeekInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && saveWeekly()}
+                  autoFocus
+                  className="w-20 text-right text-[13px] font-medium text-foreground bg-transparent outline-none border-b"
+                  style={{ borderColor: '#0A84FF' }}
+                />
+                <button onClick={saveWeekly}><Check className="w-3.5 h-3.5" style={{ color: '#30D158' }} /></button>
+              </>
+            ) : (
+              <>
+                <span className="text-[13px] font-medium text-foreground">${weekTotal.toFixed(0)} / ${weeklyGoal}</span>
+                <button onClick={() => { setWeekInput(String(weeklyGoal)); setEditingWeekly(true); }}>
+                  <Pencil className="w-3 h-3 text-muted-foreground" />
+                </button>
+              </>
+            )}
+          </div>
         </div>
         <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
           <div className="h-full rounded-full transition-all" style={{
@@ -69,7 +108,29 @@ export function GoalTracker({ weekTotal, monthTotal, isPro }: GoalTrackerProps) 
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <span className="text-[13px] text-muted-foreground">Monthly Goal</span>
-          <span className="text-[13px] font-medium text-foreground">${monthTotal.toFixed(0)} / ${monthlyGoal}</span>
+          <div className="flex items-center gap-1.5">
+            {editingMonthly ? (
+              <>
+                <input
+                  type="number"
+                  value={monthInput}
+                  onChange={(e) => setMonthInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && saveMonthly()}
+                  autoFocus
+                  className="w-20 text-right text-[13px] font-medium text-foreground bg-transparent outline-none border-b"
+                  style={{ borderColor: '#5E5CE6' }}
+                />
+                <button onClick={saveMonthly}><Check className="w-3.5 h-3.5" style={{ color: '#30D158' }} /></button>
+              </>
+            ) : (
+              <>
+                <span className="text-[13px] font-medium text-foreground">${monthTotal.toFixed(0)} / ${monthlyGoal}</span>
+                <button onClick={() => { setMonthInput(String(monthlyGoal)); setEditingMonthly(true); }}>
+                  <Pencil className="w-3 h-3 text-muted-foreground" />
+                </button>
+              </>
+            )}
+          </div>
         </div>
         <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
           <div className="h-full rounded-full transition-all" style={{
