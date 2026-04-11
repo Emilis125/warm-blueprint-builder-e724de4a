@@ -13,7 +13,7 @@ import { useSettings } from '@/hooks/use-settings';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 export const Route = createFileRoute('/')({
-  component: Dashboard,
+  component: () => <RequireAuth><Dashboard /></RequireAuth>,
   head: () => ({
     meta: [
       { title: 'TipTracker Pro — Dashboard' },
