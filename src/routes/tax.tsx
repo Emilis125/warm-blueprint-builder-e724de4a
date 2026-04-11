@@ -2,6 +2,8 @@ import { createFileRoute } from '@tanstack/react-router';
 import { GlassCard } from '@/components/GlassCard';
 import { TabBar } from '@/components/TabBar';
 import { useTips } from '@/hooks/use-tips';
+import { useSubscription } from '@/hooks/use-subscription';
+import { UpgradePaywall } from '@/components/UpgradePaywall';
 import { FileText, Table } from 'lucide-react';
 
 export const Route = createFileRoute('/tax')({
@@ -16,6 +18,7 @@ export const Route = createFileRoute('/tax')({
 
 function TaxPage() {
   const { yearTips } = useTips();
+  const { isPro } = useSubscription();
   const year = new Date().getFullYear();
   const total = yearTips.reduce((s, t) => s + t.amount, 0);
   const cash = yearTips.reduce((s, t) => s + t.cashAmount, 0);
@@ -47,33 +50,42 @@ function TaxPage() {
         ))}
       </GlassCard>
 
-      {/* Export format */}
+      {/* Export format — paywalled */}
       <div className="mb-3 animate-fade-in-up stagger-2">
         <h3 className="text-[15px] font-semibold text-foreground mb-3">Export Format</h3>
       </div>
 
-      <GlassCard className="mb-3 !p-0 animate-fade-in-up stagger-2">
-        <button className="w-full flex items-center gap-4 px-5 py-4" style={{ borderBottom: '0.5px solid rgba(255,255,255,0.12)' }}>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,69,58,0.20)' }}>
-            <FileText className="w-5 h-5" style={{ color: '#FF453A' }} />
-          </div>
-          <div className="flex-1 text-left">
-            <p className="text-[15px] font-medium text-foreground">PDF Report</p>
-            <p className="text-[13px] text-muted-foreground">Print-ready, IRS format</p>
-          </div>
-          <span className="text-muted-foreground">›</span>
-        </button>
-        <button className="w-full flex items-center gap-4 px-5 py-4">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(48,209,88,0.20)' }}>
-            <Table className="w-5 h-5" style={{ color: '#30D158' }} />
-          </div>
-          <div className="flex-1 text-left">
-            <p className="text-[15px] font-medium text-foreground">CSV Spreadsheet</p>
-            <p className="text-[13px] text-muted-foreground">For accountants</p>
-          </div>
-          <span className="text-muted-foreground">›</span>
-        </button>
-      </GlassCard>
+      {isPro ? (
+        <GlassCard className="mb-3 !p-0 animate-fade-in-up stagger-2">
+          <button className="w-full flex items-center gap-4 px-5 py-4" style={{ borderBottom: '0.5px solid rgba(255,255,255,0.12)' }}>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,69,58,0.20)' }}>
+              <FileText className="w-5 h-5" style={{ color: '#FF453A' }} />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-[15px] font-medium text-foreground">PDF Report</p>
+              <p className="text-[13px] text-muted-foreground">Print-ready, IRS format</p>
+            </div>
+            <span className="text-muted-foreground">›</span>
+          </button>
+          <button className="w-full flex items-center gap-4 px-5 py-4">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(48,209,88,0.20)' }}>
+              <Table className="w-5 h-5" style={{ color: '#30D158' }} />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-[15px] font-medium text-foreground">CSV Spreadsheet</p>
+              <p className="text-[13px] text-muted-foreground">For accountants</p>
+            </div>
+            <span className="text-muted-foreground">›</span>
+          </button>
+        </GlassCard>
+      ) : (
+        <div className="animate-fade-in-up stagger-2">
+          <UpgradePaywall
+            feature="Tax Export"
+            description="Export your tip data as PDF or CSV reports. Upgrade to Pro to access tax exports."
+          />
+        </div>
+      )}
 
       <TabBar />
     </div>
