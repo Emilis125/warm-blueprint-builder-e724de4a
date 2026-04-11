@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { GlassCard } from '@/components/GlassCard';
 import { TabBar } from '@/components/TabBar';
 import { AdBanner } from '@/components/AdBanner';
+import { SmartInsights } from '@/components/SmartInsights';
 import { useTips } from '@/hooks/use-tips';
 import { useSubscription } from '@/hooks/use-subscription';
 import { UpgradePaywall } from '@/components/UpgradePaywall';
@@ -19,7 +20,7 @@ export const Route = createFileRoute('/reports')({
 
 function ReportsPage() {
   const [period, setPeriod] = useState<'week' | 'month' | 'year'>('week');
-  const { weekTips, monthTips, yearTips, weekTotal, monthTotal } = useTips();
+  const { weekTips, monthTips, yearTips, weekTotal, monthTotal, bestDay, bestShift } = useTips();
   const { isPro, isPremium } = useSubscription();
 
   const tips = period === 'week' ? weekTips : period === 'month' ? monthTips : yearTips;
@@ -119,6 +120,17 @@ function ReportsPage() {
           />
         </div>
       )}
+
+      {/* Smart Insights — Pro feature */}
+      <div className="mb-5">
+        <SmartInsights
+          bestDay={bestDay}
+          bestShift={bestShift}
+          weekTotal={weekTotal}
+          weekTipCount={weekTips.length}
+          isPro={isPro}
+        />
+      </div>
 
       {/* Shift breakdown — Premium feature */}
       {isPremium ? (
