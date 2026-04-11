@@ -22,7 +22,7 @@ export function useSettings() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (updates: Record<string, any>) => {
+    mutationFn: async (updates: { workplaces?: string[]; categories?: string[]; weekly_goal?: number; monthly_goal?: number }) => {
       if (!user) throw new Error('Not authenticated');
       const { error } = await supabase
         .from('user_settings')
