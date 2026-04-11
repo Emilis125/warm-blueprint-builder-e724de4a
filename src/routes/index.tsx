@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
+import { RequireAuth } from '@/components/RequireAuth';
 import { GlassCard } from '@/components/GlassCard';
 import { WeekChart } from '@/components/WeekChart';
 import { LogTipsSheet } from '@/components/LogTipsSheet';
