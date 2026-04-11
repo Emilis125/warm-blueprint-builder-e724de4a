@@ -2,10 +2,10 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { GlassCard } from '@/components/GlassCard';
 import { TabBar } from '@/components/TabBar';
+import { AdBanner } from '@/components/AdBanner';
 import { useTips } from '@/hooks/use-tips';
 import { useSubscription } from '@/hooks/use-subscription';
 import { UpgradePaywall } from '@/components/UpgradePaywall';
-import { AdBanner } from '@/components/AdBanner';
 
 export const Route = createFileRoute('/reports')({
   component: ReportsPage,
@@ -20,13 +20,15 @@ export const Route = createFileRoute('/reports')({
 function ReportsPage() {
   const [period, setPeriod] = useState<'week' | 'month' | 'year'>('week');
   const { weekTips, monthTips, yearTips, weekTotal, monthTotal } = useTips();
-  const { isPro } = useSubscription();
+  const { isPro, isPremium } = useSubscription();
 
   const tips = period === 'week' ? weekTips : period === 'month' ? monthTips : yearTips;
   const total = period === 'week' ? weekTotal : period === 'month' ? monthTotal : yearTips.reduce((s, t) => s + t.amount, 0);
   const shifts = tips.length;
   const avg = shifts > 0 ? total / shifts : 0;
   const best = tips.length > 0 ? Math.max(...tips.map(t => t.amount)) : 0;
+  const cashTotal = tips.reduce((s, t) => s + t.cashAmount, 0);
+  const cardTotal = tips.reduce((s, t) => s + t.cardAmount, 0);
 
   const periods = ['week', 'month', 'year'] as const;
 
@@ -65,9 +67,28 @@ function ReportsPage() {
         <AdBanner variant="inline" />
       </div>
 
+      {/* Cash vs Card breakdown — Pro feature */}
+      {isPro ? (
+        <GlassCard className="mb-5 animate-fade-in-up stagger-3">
+          <h3 className="text-[15px] font-semibold text-foreground mb-3">Cash vs Card</h3>
+          <div className="flex gap-3">
+            <div className="flex-1 rounded-xl p-3" style={{ background: 'rgba(48,209,88,0.10)', border: '1px solid rgba(48,209,88,0.20)' }}>
+              <p className="text-[11px] font-semibold tracking-wider mb-1" style={{ color: '#30D158' }}>CASH</p>
+              <p className="text-[20px] font-semibold text-foreground">${cashTotal.toFixed(2)}</p>
+              <p className="text-[12px] text-muted-foreground">{total > 0 ? Math.round((cashTotal / total) * 100) : 0}% of total</p>
+            </div>
+            <div className="flex-1 rounded-xl p-3" style={{ background: 'rgba(10,132,255,0.10)', border: '1px solid rgba(10,132,255,0.20)' }}>
+              <p className="text-[11px] font-semibold tracking-wider mb-1" style={{ color: '#0A84FF' }}>CARD</p>
+              <p className="text-[20px] font-semibold text-foreground">${cardTotal.toFixed(2)}</p>
+              <p className="text-[12px] text-muted-foreground">{total > 0 ? Math.round((cardTotal / total) * 100) : 0}% of total</p>
+            </div>
+          </div>
+        </GlassCard>
+      ) : null}
+
       {/* Advanced chart — paywalled for month/year */}
       {period === 'week' || isPro ? (
-        <GlassCard className="animate-fade-in-up stagger-3">
+        <GlassCard className="mb-5 animate-fade-in-up stagger-3">
           <h3 className="text-[15px] font-semibold text-foreground mb-4">
             {period === 'week' ? 'Daily Breakdown' : period === 'month' ? 'Weekly Breakdown' : 'Monthly Breakdown'}
           </h3>
@@ -91,13 +112,46 @@ function ReportsPage() {
           </div>
         </GlassCard>
       ) : (
-        <div className="animate-fade-in-up stagger-3">
+        <div className="mb-5 animate-fade-in-up stagger-3">
           <UpgradePaywall
             feature="Advanced Reports"
             description="Unlock monthly and yearly breakdowns, trends, and detailed analytics."
           />
         </div>
       )}
+
+      {/* Shift breakdown — Premium feature */}
+      {isPremium ? (
+        <GlassCard className="animate-fade-in-up stagger-4">
+          <h3 className="text-[15px] font-semibold text-foreground mb-3">Shift Performance</h3>
+          {(['morning', 'afternoon', 'evening'] as const).map(s => {
+            const shiftTips = tips.filter(t => t.shift === s);
+            const shiftTotal = shiftTips.reduce((sum, t) => sum + t.amount, 0);
+            const pct = total > 0 ? Math.round((shiftTotal / total) * 100) : 0;
+            return (
+              <div key={s} className="flex items-center justify-between py-2.5" style={{ borderBottom: s !== 'evening' ? '0.5px solid rgba(255,255,255,0.08)' : undefined }}>
+                <div className="flex items-center gap-2">
+                  <span className="text-[13px]">{s === 'morning' ? '🌅' : s === 'afternoon' ? '☀️' : '🌙'}</span>
+                  <span className="text-[14px] text-foreground capitalize">{s}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-20 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                    <div className="h-full rounded-full" style={{ width: `${pct}%`, background: '#0A84FF' }} />
+                  </div>
+                  <span className="text-[13px] font-medium text-foreground w-16 text-right">${shiftTotal.toFixed(0)}</span>
+                </div>
+              </div>
+            );
+          })}
+        </GlassCard>
+      ) : isPro ? (
+        <div className="animate-fade-in-up stagger-4">
+          <UpgradePaywall
+            feature="Shift Performance"
+            description="See which shifts earn you the most. Premium only."
+          />
+        </div>
+      ) : null}
 
       <TabBar />
     </div>

@@ -2,18 +2,26 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Delete } from 'lucide-react';
 import { TabBar } from '@/components/TabBar';
+import { AdBanner } from '@/components/AdBanner';
+import { TipLimitBanner } from '@/components/TipLimitBanner';
 import { useTips } from '@/hooks/use-tips';
+import { useSubscription } from '@/hooks/use-subscription';
+
+const FREE_TIP_LIMIT = 30;
 
 export const Route = createFileRoute('/log')({
   component: LogPage,
 });
 
 function LogPage() {
-  const { addTip } = useTips();
+  const { addTip, monthTipCount } = useTips();
+  const { isPro } = useSubscription();
   const navigate = useNavigate();
   const [amount, setAmount] = useState('0');
   const [mode, setMode] = useState<'total' | 'cash' | 'card'>('total');
   const [shift, setShift] = useState<'morning' | 'afternoon' | 'evening'>('evening');
+
+  const atLimit = !isPro && monthTipCount >= FREE_TIP_LIMIT;
 
   const handleKey = (key: string) => {
     if (key === 'del') {
@@ -26,6 +34,7 @@ function LogPage() {
   };
 
   const handleSave = () => {
+    if (atLimit) return;
     const val = parseFloat(amount) || 0;
     if (val <= 0) return;
     addTip({
@@ -49,6 +58,14 @@ function LogPage() {
       <div className="text-center mb-2">
         <h1 className="text-[17px] font-semibold text-foreground">Log Tips</h1>
         <p className="text-[13px] text-muted-foreground">{today}</p>
+      </div>
+
+      {/* Tip limit warning for free users */}
+      {!isPro && <TipLimitBanner used={monthTipCount} limit={FREE_TIP_LIMIT} />}
+
+      {/* Ad banner for free users */}
+      <div className="mb-4">
+        <AdBanner variant="inline" />
       </div>
 
       <div className="flex gap-1 p-1 rounded-xl mb-6" style={{ background: 'rgba(255,255,255,0.10)' }}>
@@ -85,8 +102,12 @@ function LogPage() {
         ))}
       </div>
 
-      <button onClick={handleSave} className="btn-ios-blue w-full h-[54px] text-[17px] font-semibold">
-        Save Tips
+      <button
+        onClick={handleSave}
+        className="btn-ios-blue w-full h-[54px] text-[17px] font-semibold"
+        style={atLimit ? { opacity: 0.4, pointerEvents: 'none' } : undefined}
+      >
+        {atLimit ? 'Tip Limit Reached' : 'Save Tips'}
       </button>
 
       <TabBar />

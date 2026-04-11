@@ -3,8 +3,10 @@ import { useState } from 'react';
 import { GlassCard } from '@/components/GlassCard';
 import { TabBar } from '@/components/TabBar';
 import { SubscriptionSheet } from '@/components/SubscriptionSheet';
+import { AdBanner } from '@/components/AdBanner';
 import { useSubscription } from '@/hooks/use-subscription';
-import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown } from 'lucide-react';
+import { useTips } from '@/hooks/use-tips';
+import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Tag, Database } from 'lucide-react';
 
 export const Route = createFileRoute('/profile')({
   component: ProfilePage,
@@ -18,16 +20,19 @@ export const Route = createFileRoute('/profile')({
 
 function ProfilePage() {
   const [subOpen, setSubOpen] = useState(false);
-  const { plan } = useSubscription();
+  const { plan, isPro, isPremium } = useSubscription();
+  const { monthTipCount } = useTips();
 
   const planLabels = { free: 'Free Plan', pro: 'Pro Plan', premium: 'Premium' };
   const planColors = { free: 'rgba(255,255,255,0.60)', pro: '#0A84FF', premium: '#FFD60A' };
 
   const settings = [
     { icon: Bell, label: 'Notifications', sub: 'Daily reminder at 11:00 PM', onClick: undefined },
-    { icon: Briefcase, label: 'Workplace', sub: 'Main Job', onClick: undefined },
+    { icon: Briefcase, label: 'Workplace', sub: isPremium ? 'Multi-workplace enabled' : 'Main Job', onClick: undefined, premium: !isPremium },
+    { icon: Tag, label: 'Custom Categories', sub: isPremium ? 'Manage categories' : 'Premium feature', onClick: undefined, premium: !isPremium },
     { icon: CreditCard, label: 'Subscription', sub: planLabels[plan], onClick: () => setSubOpen(true), badge: plan !== 'free' },
     { icon: Calendar, label: 'Tax Year', sub: '2025', onClick: undefined },
+    { icon: Database, label: 'Data Backup', sub: isPremium ? 'Auto-backup enabled' : 'Premium feature', onClick: undefined, premium: !isPremium },
   ];
 
   return (
@@ -53,14 +58,38 @@ function ProfilePage() {
         </span>
       </div>
 
+      {/* Free plan usage */}
+      {!isPro && (
+        <GlassCard className="mb-5 animate-fade-in-up stagger-2">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[13px] text-muted-foreground">Tips this month</span>
+            <span className="text-[13px] font-medium text-foreground">{monthTipCount} / 30</span>
+          </div>
+          <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+            <div className="h-full rounded-full transition-all" style={{
+              width: `${Math.min((monthTipCount / 30) * 100, 100)}%`,
+              background: monthTipCount >= 25 ? '#FF453A' : monthTipCount >= 20 ? '#FF9F0A' : '#0A84FF',
+            }} />
+          </div>
+        </GlassCard>
+      )}
+
+      {/* Ad banner */}
+      <div className="mb-5 animate-fade-in-up stagger-2">
+        <AdBanner variant="inline" />
+      </div>
+
       {/* Settings */}
       <GlassCard className="!p-0 mb-5 animate-fade-in-up stagger-2">
         {settings.map((item, i) => (
-          <button key={item.label} onClick={item.onClick} className="w-full flex items-center gap-4 px-5 py-4"
+          <button key={item.label} onClick={item.premium ? () => setSubOpen(true) : item.onClick} className="w-full flex items-center gap-4 px-5 py-4"
             style={i < settings.length - 1 ? { borderBottom: '0.5px solid rgba(255,255,255,0.12)' } : undefined}>
             <item.icon className="w-5 h-5 text-muted-foreground" />
             <div className="flex-1 text-left">
-              <p className="text-[15px] font-medium text-foreground">{item.label}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-[15px] font-medium text-foreground">{item.label}</p>
+                {item.premium && <Lock className="w-3 h-3" style={{ color: '#FFD60A' }} />}
+              </div>
               <p className="text-[13px] text-muted-foreground">{item.sub}</p>
             </div>
             <ChevronRight className="w-4 h-4 text-muted-foreground" />
