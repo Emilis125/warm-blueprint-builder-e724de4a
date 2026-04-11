@@ -32,8 +32,8 @@ const plans = [
   {
     id: 'premium' as const,
     name: 'Premium',
-    price: { monthly: '$9.99', annual: '$9.99' },
-    period: { monthly: '/month', annual: '/month' },
+    price: { monthly: '$9.99', annual: '$79' },
+    period: { monthly: '/month', annual: '/year' },
     icon: Crown,
     color: '#FFD60A',
     features: ['Everything in Pro', 'Ad-free experience', 'AI-powered insights', 'Advanced analytics', 'Priority support', 'Custom categories', 'Data export & backup'],
@@ -125,6 +125,9 @@ export function SubscriptionSheet({ open, onClose }: SubscriptionSheetProps) {
                       <span className="text-[13px] text-muted-foreground">{p.period[billing]}</span>
                       {billing === 'annual' && p.id === 'pro' && (
                         <span className="ml-2 text-[11px] line-through text-muted-foreground">$59.88/yr</span>
+                      )}
+                      {billing === 'annual' && p.id === 'premium' && (
+                        <span className="ml-2 text-[11px] line-through text-muted-foreground">$119.88/yr</span>
                       )}
                     </div>
                   </div>
