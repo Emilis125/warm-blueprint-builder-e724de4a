@@ -32,8 +32,8 @@ const plans = [
   {
     id: 'premium' as const,
     name: 'Premium',
-    price: { monthly: '$9.99', annual: '$9.99' },
-    period: { monthly: '/month', annual: '/month' },
+    price: { monthly: '$9.99', annual: '$79' },
+    period: { monthly: '/month', annual: '/year' },
     icon: Crown,
     color: '#FFD60A',
     features: ['Everything in Pro', 'Ad-free experience', 'AI-powered insights', 'Advanced analytics', 'Priority support', 'Custom categories', 'Data export & backup'],
