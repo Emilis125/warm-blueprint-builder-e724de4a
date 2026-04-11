@@ -126,6 +126,9 @@ export function SubscriptionSheet({ open, onClose }: SubscriptionSheetProps) {
                       {billing === 'annual' && p.id === 'pro' && (
                         <span className="ml-2 text-[11px] line-through text-muted-foreground">$59.88/yr</span>
                       )}
+                      {billing === 'annual' && p.id === 'premium' && (
+                        <span className="ml-2 text-[11px] line-through text-muted-foreground">$119.88/yr</span>
+                      )}
                     </div>
                   </div>
                 </div>
