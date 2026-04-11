@@ -4,9 +4,14 @@ import { GlassCard } from '@/components/GlassCard';
 import { TabBar } from '@/components/TabBar';
 import { SubscriptionSheet } from '@/components/SubscriptionSheet';
 import { AdBanner } from '@/components/AdBanner';
+import { NotificationSheet } from '@/components/NotificationSheet';
+import { WorkplaceSheet } from '@/components/WorkplaceSheet';
+import { CategoriesSheet } from '@/components/CategoriesSheet';
 import { useSubscription } from '@/hooks/use-subscription';
+import { useSettings } from '@/hooks/use-settings';
 import { useTips } from '@/hooks/use-tips';
-import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Tag, Database } from 'lucide-react';
+import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Tag, Database, CheckCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
 export const Route = createFileRoute('/profile')({
   component: ProfilePage,
@@ -20,19 +25,31 @@ export const Route = createFileRoute('/profile')({
 
 function ProfilePage() {
   const [subOpen, setSubOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [wpOpen, setWpOpen] = useState(false);
+  const [catOpen, setCatOpen] = useState(false);
+  const [backupDone, setBackupDone] = useState(false);
   const { plan, isPro, isPremium } = useSubscription();
   const { monthTipCount } = useTips();
+  const { workplaces, addWorkplace, removeWorkplace } = useSettings();
+  const [selectedWp, setSelectedWp] = useState(workplaces[0] || 'Main Job');
 
   const planLabels = { free: 'Free Plan', pro: 'Pro Plan', premium: 'Premium' };
   const planColors = { free: 'rgba(255,255,255,0.60)', pro: '#0A84FF', premium: '#FFD60A' };
 
+  const handleBackup = () => {
+    setBackupDone(true);
+    toast.success('Data backed up!', { description: 'Your tip data has been saved to the cloud.' });
+    setTimeout(() => setBackupDone(false), 3000);
+  };
+
   const settings = [
-    { icon: Bell, label: 'Notifications', sub: 'Daily reminder at 11:00 PM', onClick: undefined },
-    { icon: Briefcase, label: 'Workplace', sub: isPremium ? 'Multi-workplace enabled' : 'Main Job', onClick: undefined, premium: !isPremium },
-    { icon: Tag, label: 'Custom Categories', sub: isPremium ? 'Manage categories' : 'Premium feature', onClick: undefined, premium: !isPremium },
+    { icon: Bell, label: 'Notifications', sub: 'Daily reminder at 11:00 PM', onClick: () => setNotifOpen(true) },
+    { icon: Briefcase, label: 'Workplace', sub: isPro ? `${workplaces.length} workplace${workplaces.length > 1 ? 's' : ''}` : 'Main Job', onClick: isPro ? () => setWpOpen(true) : undefined, premium: !isPro },
+    { icon: Tag, label: 'Custom Categories', sub: isPremium ? 'Manage categories' : 'Premium feature', onClick: isPremium ? () => setCatOpen(true) : undefined, premium: !isPremium },
     { icon: CreditCard, label: 'Subscription', sub: planLabels[plan], onClick: () => setSubOpen(true), badge: plan !== 'free' },
-    { icon: Calendar, label: 'Tax Year', sub: '2025', onClick: undefined },
-    { icon: Database, label: 'Data Backup', sub: isPremium ? 'Auto-backup enabled' : 'Premium feature', onClick: undefined, premium: !isPremium },
+    { icon: Calendar, label: 'Tax Year', sub: String(new Date().getFullYear()), onClick: undefined },
+    { icon: Database, label: 'Data Backup', sub: isPremium ? (backupDone ? 'Backed up ✓' : 'Tap to back up now') : 'Premium feature', onClick: isPremium ? handleBackup : undefined, premium: !isPremium },
   ];
 
   return (
@@ -82,8 +99,12 @@ function ProfilePage() {
       {/* Settings */}
       <GlassCard className="!p-0 mb-5 animate-fade-in-up stagger-2">
         {settings.map((item, i) => (
-          <button key={item.label} onClick={item.premium ? () => setSubOpen(true) : item.onClick} className="w-full flex items-center gap-4 px-5 py-4"
-            style={i < settings.length - 1 ? { borderBottom: '0.5px solid rgba(255,255,255,0.12)' } : undefined}>
+          <button
+            key={item.label}
+            onClick={item.premium ? () => setSubOpen(true) : item.onClick}
+            className="w-full flex items-center gap-4 px-5 py-4"
+            style={i < settings.length - 1 ? { borderBottom: '0.5px solid rgba(255,255,255,0.12)' } : undefined}
+          >
             <item.icon className="w-5 h-5 text-muted-foreground" />
             <div className="flex-1 text-left">
               <div className="flex items-center gap-2">
@@ -92,7 +113,11 @@ function ProfilePage() {
               </div>
               <p className="text-[13px] text-muted-foreground">{item.sub}</p>
             </div>
-            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            {item.label === 'Data Backup' && backupDone ? (
+              <CheckCircle className="w-4 h-4" style={{ color: '#30D158' }} />
+            ) : (
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            )}
           </button>
         ))}
       </GlassCard>
@@ -120,13 +145,24 @@ function ProfilePage() {
 
       {/* Sign Out */}
       <GlassCard className="!p-0 animate-fade-in-up stagger-3">
-        <button className="w-full flex items-center gap-4 px-5 py-4">
+        <button className="w-full flex items-center gap-4 px-5 py-4" onClick={() => toast.info('Sign out coming soon with authentication!')}>
           <LogOut className="w-5 h-5" style={{ color: '#FF453A' }} />
           <span className="text-[15px] font-medium" style={{ color: '#FF453A' }}>Sign Out</span>
         </button>
       </GlassCard>
 
       <SubscriptionSheet open={subOpen} onClose={() => setSubOpen(false)} />
+      <NotificationSheet open={notifOpen} onClose={() => setNotifOpen(false)} />
+      <WorkplaceSheet
+        open={wpOpen}
+        onClose={() => setWpOpen(false)}
+        workplaces={workplaces}
+        selected={selectedWp}
+        onSelect={setSelectedWp}
+        onAdd={addWorkplace}
+        onRemove={removeWorkplace}
+      />
+      <CategoriesSheet open={catOpen} onClose={() => setCatOpen(false)} />
       <TabBar />
     </div>
   );

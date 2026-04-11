@@ -8,6 +8,7 @@ import { AdBanner } from '@/components/AdBanner';
 import { GoalTracker } from '@/components/GoalTracker';
 import { useTips } from '@/hooks/use-tips';
 import { useSubscription } from '@/hooks/use-subscription';
+import { useSettings } from '@/hooks/use-settings';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 export const Route = createFileRoute('/')({
@@ -24,10 +25,10 @@ function Dashboard() {
   const [logOpen, setLogOpen] = useState(false);
   const { todayTotal, todayCash, todayCard, diff, dailyTotals, yesterdayTotal, weekTotal, monthTotal } = useTips();
   const { isPro } = useSubscription();
+  const { weeklyGoal, monthlyGoal, setWeeklyGoal, setMonthlyGoal } = useSettings();
 
   const today = new Date();
   const dayStr = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-  const diffPercent = yesterdayTotal > 0 ? Math.round((diff / yesterdayTotal) * 100) : 0;
   const cashPercent = todayTotal > 0 ? Math.round((todayCash / todayTotal) * 100) : 0;
   const cardPercent = todayTotal > 0 ? Math.round((todayCard / todayTotal) * 100) : 0;
 
@@ -79,7 +80,15 @@ function Dashboard() {
 
       {/* Goal Tracker */}
       <div className="mt-5">
-        <GoalTracker weekTotal={weekTotal} monthTotal={monthTotal} isPro={isPro} />
+        <GoalTracker
+          weekTotal={weekTotal}
+          monthTotal={monthTotal}
+          isPro={isPro}
+          weeklyGoal={weeklyGoal}
+          monthlyGoal={monthlyGoal}
+          onSetWeeklyGoal={setWeeklyGoal}
+          onSetMonthlyGoal={setMonthlyGoal}
+        />
       </div>
 
       {/* Log Tips Button */}
