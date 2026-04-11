@@ -3,20 +3,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
- */
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -58,77 +44,69 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-glass: var(--glass);
+  --color-glass-border: var(--glass-border);
+  --color-glass-hover: var(--glass-hover);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-ios-blue: var(--ios-blue);
+  --color-ios-blue-glass: var(--ios-blue-glass);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-hint: var(--text-hint);
 }
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
-}
+  /* TipTracker Pro - iOS 26 Liquid Glass Dark Theme */
+  --background: oklch(0.13 0.03 260);
+  --foreground: oklch(1 0 0);
+  --card: oklch(1 0 0 / 10%);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.1 0.02 260 / 75%);
+  --popover-foreground: oklch(1 0 0);
+  --primary: oklch(0.58 0.22 260);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(1 0 0 / 8%);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(1 0 0 / 6%);
+  --muted-foreground: oklch(1 0 0 / 55%);
+  --accent: oklch(1 0 0 / 10%);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.65 0.25 25);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(1 0 0 / 20%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.58 0.22 260);
+  --chart-1: oklch(0.58 0.22 260);
+  --chart-2: oklch(0.72 0.19 155);
+  --chart-3: oklch(0.82 0.18 85);
+  --chart-4: oklch(0.65 0.25 25);
+  --chart-5: oklch(0.7 0.15 300);
 
-.dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  /* Glass tokens */
+  --glass: oklch(1 0 0 / 10%);
+  --glass-border: oklch(1 0 0 / 25%);
+  --glass-hover: oklch(1 0 0 / 8%);
+
+  /* Semantic colors */
+  --success: oklch(0.72 0.19 155);
+  --warning: oklch(0.88 0.18 95);
+  --ios-blue: oklch(0.58 0.22 260);
+  --ios-blue-glass: oklch(0.58 0.22 260 / 20%);
+  --text-primary: oklch(1 0 0);
+  --text-secondary: oklch(1 0 0 / 60%);
+  --text-hint: oklch(1 0 0 / 35%);
+
+  /* Sidebar */
+  --sidebar: oklch(0.1 0.02 260 / 65%);
+  --sidebar-foreground: oklch(1 0 0);
+  --sidebar-primary: oklch(0.58 0.22 260);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(1 0 0 / 10%);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(1 0 0 / 15%);
+  --sidebar-ring: oklch(0.58 0.22 260);
 }
 
 @layer base {
@@ -137,7 +115,125 @@
   }
 
   body {
-    background-color: var(--color-background);
+    background: linear-gradient(160deg, #0D1B3E 0%, #1A1040 50%, #0D2818 100%);
     color: var(--color-foreground);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  html {
+    background: #0D1B3E;
   }
 }
+
+/* Glass surface utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.3);
+}
+
+.glass-hero {
+  background: rgba(10, 132, 255, 0.20);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(10, 132, 255, 0.40);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+}
+
+.glass-tab-bar {
+  background: rgba(15, 15, 25, 0.65);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 40px;
+}
+
+.glass-sheet {
+  background: rgba(10, 10, 20, 0.75);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border-top: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 28px 28px 0 0;
+}
+
+.glass-numpad-key {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  transition: transform 0.1s ease;
+}
+
+.glass-numpad-key:active {
+  transform: scale(0.92);
+}
+
+.btn-ios-blue {
+  background: #0A84FF;
+  border-radius: 16px;
+  box-shadow: 0 0 24px rgba(10, 132, 255, 0.50);
+  color: white;
+  font-weight: 600;
+}
+
+.btn-ios-blue:active {
+  background: #0070E0;
+}
+
+.success-pill {
+  background: rgba(48, 209, 88, 0.20);
+  border: 1px solid rgba(48, 209, 88, 0.40);
+  color: #30D158;
+  border-radius: 20px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 24px rgba(10, 132, 255, 0.50);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(10, 132, 255, 0.80);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.stagger-1 { animation-delay: 80ms; }
+.stagger-2 { animation-delay: 160ms; }
+.stagger-3 { animation-delay: 240ms; }
+.stagger-4 { animation-delay: 320ms; }
