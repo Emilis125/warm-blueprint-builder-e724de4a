@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { RequireAuth } from '@/components/RequireAuth';
 import { useState } from 'react';
 import { GlassCard } from '@/components/GlassCard';
 import { TabBar } from '@/components/TabBar';
@@ -11,7 +12,7 @@ import { useSubscription } from '@/hooks/use-subscription';
 import { UpgradePaywall } from '@/components/UpgradePaywall';
 
 export const Route = createFileRoute('/reports')({
-  component: ReportsPage,
+  component: () => <RequireAuth><ReportsPage /></RequireAuth>,
   head: () => ({
     meta: [
       { title: 'TipTracker Pro — Reports' },

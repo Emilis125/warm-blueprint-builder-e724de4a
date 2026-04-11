@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { RequireAuth } from '@/components/RequireAuth';
 import { useState } from 'react';
 import { GlassCard } from '@/components/GlassCard';
 import { TabBar } from '@/components/TabBar';
@@ -17,7 +18,7 @@ import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Loc
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/profile')({
-  component: ProfilePage,
+  component: () => <RequireAuth><ProfilePage /></RequireAuth>,
   head: () => ({
     meta: [
       { title: 'TipTracker Pro — Profile' },

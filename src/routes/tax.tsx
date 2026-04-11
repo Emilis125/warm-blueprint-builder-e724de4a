@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { RequireAuth } from '@/components/RequireAuth';
 import { useState } from 'react';
 import { GlassCard } from '@/components/GlassCard';
 import { TabBar } from '@/components/TabBar';
@@ -10,7 +11,7 @@ import { FileText, Table, Download, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/tax')({
-  component: TaxPage,
+  component: () => <RequireAuth><TaxPage /></RequireAuth>,
   head: () => ({
     meta: [
       { title: 'TipTracker Pro — Tax Export' },
