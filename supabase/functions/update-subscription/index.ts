@@ -45,17 +45,17 @@ Deno.serve(async (req) => {
 
     const { data: sub } = await supabase
       .from('subscriptions')
-      .select('paddle_subscription_id')
+      .select('stripe_subscription_id')
       .eq('user_id', user.id)
       .eq('environment', 'live')
       .maybeSingle();
 
-    if (!sub) {
-      return new Response(JSON.stringify({ error: 'No subscription found' }), { status: 404, headers: corsHeaders });
+    if (!sub?.stripe_subscription_id) {
+      return new Response(JSON.stringify({ error: 'No active subscription found' }), { status: 404, headers: corsHeaders });
     }
 
     const stripe = getStripe();
-    const subscription = await stripe.subscriptions.retrieve(sub.paddle_subscription_id);
+    const subscription = await stripe.subscriptions.retrieve(sub.stripe_subscription_id);
     const itemId = subscription.items.data[0].id;
 
     // Create a new price for the plan change
@@ -66,7 +66,7 @@ Deno.serve(async (req) => {
       product_data: { name: priceConfig.name },
     });
 
-    const updated = await stripe.subscriptions.update(sub.paddle_subscription_id, {
+    const updated = await stripe.subscriptions.update(sub.stripe_subscription_id, {
       items: [{ id: itemId, price: newPrice.id }],
       proration_behavior: 'create_prorations',
       metadata: { productId: priceConfig.product, priceId },
