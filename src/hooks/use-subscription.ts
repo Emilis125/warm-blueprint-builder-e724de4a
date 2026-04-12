@@ -8,7 +8,7 @@ interface Subscription {
   price_id: string;
   status: string;
   current_period_end: string | null;
-  cancel_at_period_end: boolean;
+  cancel_at_period_end: boolean | null;
 }
 
 export function useSubscription() {
