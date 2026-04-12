@@ -52,8 +52,9 @@ function ProfilePage() {
   const [wpOpen, setWpOpen] = useState(false);
   
   const [backupDone, setBackupDone] = useState(false);
-  const { plan, isPro, isPremium } = useSubscription();
+  const { plan, isPro, isPremium, subscription } = useSubscription();
   const { monthTipCount, allTips } = useTips();
+  const [portalLoading, setPortalLoading] = useState(false);
   const { workplaces, addWorkplace, removeWorkplace } = useSettings();
   const [selectedWp, setSelectedWp] = useState(workplaces[0] || 'Main Job');
 
