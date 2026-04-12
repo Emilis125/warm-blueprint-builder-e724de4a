@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { RequireAuth } from '@/components/RequireAuth';
 import { TabBar } from '@/components/TabBar';
