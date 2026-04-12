@@ -25,9 +25,9 @@ function RefundPage() {
         <p className="text-muted-foreground text-[12px]">Last updated: April 12, 2026</p>
 
         <section>
-          <h2 className="text-[16px] font-semibold text-foreground mb-2">30-Day Money-Back Guarantee</h2>
+          <h2 className="text-[16px] font-semibold text-foreground mb-2">Refund Policy</h2>
           <p>
-            We offer a <strong>30-day money-back guarantee</strong> on all paid subscriptions. If you are not satisfied with TipTracker Pro for any reason, you can request a full refund within 30 days of your purchase date — no questions asked.
+            Refund requests for paid subscriptions will be reviewed on a case-by-case basis. If you experience a technical issue or billing error, please contact our support team and we will work to resolve it promptly.
           </p>
         </section>
 
@@ -50,12 +50,6 @@ function RefundPage() {
           </p>
         </section>
 
-        <section>
-          <h2 className="text-[16px] font-semibold text-foreground mb-2">After 30 Days</h2>
-          <p>
-            Refund requests made after the 30-day window will be reviewed on a case-by-case basis. We aim to be fair and reasonable in all cases.
-          </p>
-        </section>
 
         <section>
           <h2 className="text-[16px] font-semibold text-foreground mb-2">Cancellation</h2>
