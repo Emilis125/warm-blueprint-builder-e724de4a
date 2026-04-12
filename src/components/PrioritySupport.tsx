@@ -38,7 +38,7 @@ export function PrioritySupport({ isPremium }: PrioritySupportProps) {
       <div className="space-y-2">
         <button
           onClick={() => {
-            window.location.href = 'mailto:emiljaso11@gmail.com?subject=Premium Support Request';
+            window.location.href = 'mailto:ejgroup0@gmail.com?subject=Premium Support Request';
             toast.success('Opening email client...');
           }}
           className="w-full flex items-center gap-3 p-3 rounded-xl transition-all active:scale-[0.98]"
