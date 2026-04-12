@@ -3,7 +3,6 @@ import { RequireAuth } from '@/components/RequireAuth';
 import { useState } from 'react';
 import { GlassCard } from '@/components/GlassCard';
 import { TabBar } from '@/components/TabBar';
-import { SubscriptionSheet } from '@/components/SubscriptionSheet';
 import { AdBanner } from '@/components/AdBanner';
 import { NotificationSheet } from '@/components/NotificationSheet';
 import { WorkplaceSheet } from '@/components/WorkplaceSheet';
@@ -48,7 +47,6 @@ function downloadBackup(allTips: any[]) {
 function ProfilePage() {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const [subOpen, setSubOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [wpOpen, setWpOpen] = useState(false);
   
@@ -79,7 +77,7 @@ function ProfilePage() {
     { icon: Bell, label: 'Notifications', sub: 'Daily reminder at 11:00 PM', onClick: () => setNotifOpen(true) },
     { icon: Briefcase, label: 'Workplace', sub: isPro ? `${workplaces.length} workplace${workplaces.length > 1 ? 's' : ''}` : 'Main Job', onClick: isPro ? () => setWpOpen(true) : undefined, premium: !isPro },
     
-    { icon: CreditCard, label: 'Subscription', sub: planLabels[plan], onClick: () => setSubOpen(true), badge: plan !== 'free' },
+    { icon: CreditCard, label: 'Subscription', sub: planLabels[plan], onClick: () => navigate({ to: '/pricing' }), badge: plan !== 'free' },
     { icon: Calendar, label: 'Tax Year', sub: String(new Date().getFullYear()), onClick: undefined },
     { icon: Download, label: 'Data Export & Backup', sub: isPremium ? (backupDone ? 'Downloaded ✓' : 'Download all data as JSON') : 'Premium feature', onClick: isPremium ? handleBackup : undefined, premium: !isPremium },
     { icon: Database, label: 'Cloud Backup', sub: isPro ? 'Sync data to cloud' : 'Pro feature', onClick: isPro ? handleCloudBackup : undefined, premium: !isPro },
@@ -111,7 +109,7 @@ function ProfilePage() {
       {/* Upgrade CTA for free users */}
       {plan === 'free' && (
         <button
-          onClick={() => setSubOpen(true)}
+          onClick={() => navigate({ to: '/pricing' })}
           className="w-full rounded-2xl p-4 mb-5 flex items-center gap-4 animate-fade-in-up stagger-2"
           style={{
             background: 'linear-gradient(135deg, rgba(10,132,255,0.15), rgba(94,92,230,0.15))',
@@ -155,7 +153,7 @@ function ProfilePage() {
         {settings.map((item, i) => (
           <button
             key={item.label}
-            onClick={item.premium ? () => setSubOpen(true) : item.onClick}
+            onClick={item.premium ? () => navigate({ to: '/pricing' }) : item.onClick}
             className="w-full flex items-center gap-4 px-5 py-4"
             style={i < settings.length - 1 ? { borderBottom: '0.5px solid rgba(255,255,255,0.12)' } : undefined}
           >
@@ -193,7 +191,6 @@ function ProfilePage() {
         </button>
       </GlassCard>
 
-      <SubscriptionSheet open={subOpen} onClose={() => setSubOpen(false)} />
       <NotificationSheet open={notifOpen} onClose={() => setNotifOpen(false)} />
       <WorkplaceSheet
         open={wpOpen}
