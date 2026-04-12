@@ -174,7 +174,7 @@ function ReportsPage() {
             );
           })}
         </GlassCard>
-      ) : isPro ? (
+      ) : (
         <div className="animate-fade-in-up stagger-4">
           <UpgradePaywall
             feature="Shift Performance"
@@ -182,7 +182,7 @@ function ReportsPage() {
             tier="premium"
           />
         </div>
-      ) : null}
+      )}
 
       <TabBar />
     </div>
