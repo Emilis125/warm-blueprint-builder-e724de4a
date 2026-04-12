@@ -33,6 +33,11 @@ export function UpgradePaywall({ feature, description, tier = 'pro' }: UpgradePa
         <Crown className="w-4 h-4" />
         Upgrade to {tier === 'premium' ? 'Premium' : 'Pro'}
       </Link>
+      {tier === 'pro' && (
+        <p className="text-[12px] font-medium mt-2" style={{ color: '#30D158' }}>
+          7-day free trial included
+        </p>
+      )}
     </div>
   );
 }
