@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/use-auth';
 import { getPaddleEnvironment } from '@/lib/paddle';
@@ -15,6 +15,7 @@ export function useSubscription() {
   const { user } = useAuth();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
+  const channelIdRef = useRef(Math.random().toString(36).slice(2));
 
   useEffect(() => {
     if (!user) {
@@ -37,11 +38,10 @@ export function useSubscription() {
       setLoading(false);
     };
 
-    fetchSubscription();
+    void fetchSubscription();
 
-    // Realtime updates
     const channel = supabase
-      .channel('subscription-changes')
+      .channel(`subscription-changes-${user.id}-${channelIdRef.current}`)
       .on(
         'postgres_changes',
         {
@@ -50,11 +50,15 @@ export function useSubscription() {
           table: 'subscriptions',
           filter: `user_id=eq.${user.id}`,
         },
-        () => fetchSubscription()
+        () => {
+          void fetchSubscription();
+        }
       )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      void supabase.removeChannel(channel);
+    };
   }, [user]);
 
   const isActive = subscription?.status === 'active' || subscription?.status === 'trialing';
