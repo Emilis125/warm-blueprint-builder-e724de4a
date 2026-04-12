@@ -41,6 +41,7 @@ export const Route = createRootRoute({
       { name: "author", content: "TipTracker Pro" },
       { name: "theme-color", content: "#0A84FF" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "TipTracker" },
       { property: "og:title", content: "TipTracker Pro" },
