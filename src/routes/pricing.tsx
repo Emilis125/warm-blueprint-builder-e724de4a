@@ -46,6 +46,7 @@ const plans = [
     icon: Zap,
     color: '#0A84FF',
     popular: true,
+    trialBadge: '7 DAYS FREE',
     features: ['Unlimited tip logging', 'Unlimited history', 'Full weekly & monthly charts', 'Tax export (PDF & CSV)', 'Smart insights & trends', 'Goal tracking', 'Multi-job tracking'],
     missing: ['Ad-free experience', 'Cloud backup', 'AI insights', 'Priority support'],
   },
@@ -221,6 +222,11 @@ function PricingPage() {
                       {p.popular && (
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: '#0A84FF', color: 'white' }}>
                           POPULAR
+                        </span>
+                      )}
+                      {'trialBadge' in p && p.trialBadge && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: 'rgba(48,209,88,0.25)', color: '#30D158' }}>
+                          {p.trialBadge}
                         </span>
                       )}
                       {isCurrent && (
