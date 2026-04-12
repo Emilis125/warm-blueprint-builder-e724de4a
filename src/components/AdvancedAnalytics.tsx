@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { Crown, BarChart3, Target, Calendar, ArrowUpRight } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
 import { GlassCard } from './GlassCard';
-import { SubscriptionSheet } from './SubscriptionSheet';
 import type { TipEntry } from '@/lib/tip-store';
 
 interface AdvancedAnalyticsProps {
@@ -10,31 +9,26 @@ interface AdvancedAnalyticsProps {
 }
 
 export function AdvancedAnalytics({ tips, isPremium }: AdvancedAnalyticsProps) {
-  const [sheetOpen, setSheetOpen] = useState(false);
-
   if (!isPremium) {
     return (
-      <>
-        <GlassCard className="animate-fade-in-up stagger-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-[15px] font-semibold text-foreground flex items-center gap-2">
-              <BarChart3 className="w-4 h-4" style={{ color: '#64D2FF' }} />
-              Advanced Analytics
-            </h3>
-            <button
-              onClick={() => setSheetOpen(true)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold"
-              style={{ background: 'rgba(255,214,10,0.15)', color: '#FFD60A' }}
-            >
-              <Crown className="w-3 h-3" /> PREMIUM
-            </button>
-          </div>
-          <p className="text-[13px] text-muted-foreground">
-            Hourly heatmaps, earning velocity, workplace comparisons, and income projections.
-          </p>
-        </GlassCard>
-        <SubscriptionSheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
-      </>
+      <GlassCard className="animate-fade-in-up stagger-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-[15px] font-semibold text-foreground flex items-center gap-2">
+            <BarChart3 className="w-4 h-4" style={{ color: '#64D2FF' }} />
+            Advanced Analytics
+          </h3>
+          <Link
+            to="/pricing"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold"
+            style={{ background: 'rgba(255,214,10,0.15)', color: '#FFD60A' }}
+          >
+            <Crown className="w-3 h-3" /> PREMIUM
+          </Link>
+        </div>
+        <p className="text-[13px] text-muted-foreground">
+          Hourly heatmaps, earning velocity, workplace comparisons, and income projections.
+        </p>
+      </GlassCard>
     );
   }
 

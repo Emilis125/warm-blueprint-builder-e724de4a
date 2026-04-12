@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Crown, Brain, TrendingUp, DollarSign, Clock, Lightbulb, RefreshCw, Loader2 } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
 import { GlassCard } from './GlassCard';
-import { SubscriptionSheet } from './SubscriptionSheet';
 import { supabase } from '@/integrations/supabase/client';
 import type { TipEntry } from '@/hooks/use-tips';
 
@@ -27,34 +27,30 @@ const colorMap: Record<string, string> = {
 };
 
 export function AIInsights({ tips, weekTotal, monthTotal, isPremium }: AIInsightsProps) {
-  const [sheetOpen, setSheetOpen] = useState(false);
   const [insights, setInsights] = useState<{ title: string; body: string; type: string }[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   if (!isPremium) {
     return (
-      <>
-        <GlassCard className="animate-fade-in-up stagger-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-[15px] font-semibold text-foreground flex items-center gap-2">
-              <Brain className="w-4 h-4" style={{ color: '#BF5AF2' }} />
-              AI-Powered Insights
-            </h3>
-            <button
-              onClick={() => setSheetOpen(true)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold"
-              style={{ background: 'rgba(255,214,10,0.15)', color: '#FFD60A' }}
-            >
-              <Crown className="w-3 h-3" /> PREMIUM
-            </button>
-          </div>
-          <p className="text-[13px] text-muted-foreground">
-            Get personalized earning strategies, shift optimization tips, and income projections powered by AI analysis of your data.
-          </p>
-        </GlassCard>
-        <SubscriptionSheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
-      </>
+      <GlassCard className="animate-fade-in-up stagger-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-[15px] font-semibold text-foreground flex items-center gap-2">
+            <Brain className="w-4 h-4" style={{ color: '#BF5AF2' }} />
+            AI-Powered Insights
+          </h3>
+          <Link
+            to="/pricing"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold"
+            style={{ background: 'rgba(255,214,10,0.15)', color: '#FFD60A' }}
+          >
+            <Crown className="w-3 h-3" /> PREMIUM
+          </Link>
+        </div>
+        <p className="text-[13px] text-muted-foreground">
+          Get personalized earning strategies, shift optimization tips, and income projections powered by AI analysis of your data.
+        </p>
+      </GlassCard>
     );
   }
 
