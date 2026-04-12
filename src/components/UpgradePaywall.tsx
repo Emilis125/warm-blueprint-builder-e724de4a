@@ -8,7 +8,7 @@ interface UpgradePaywallProps {
   tier?: 'pro' | 'premium';
 }
 
-export function UpgradePaywall({ feature, description }: UpgradePaywallProps) {
+export function UpgradePaywall({ feature, description, tier = 'pro' }: UpgradePaywallProps) {
   const [sheetOpen, setSheetOpen] = useState(false);
 
   return (
