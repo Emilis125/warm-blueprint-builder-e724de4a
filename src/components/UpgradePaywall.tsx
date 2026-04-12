@@ -22,6 +22,7 @@ export function UpgradePaywall({ feature, description, tier = 'pro' }: UpgradePa
       </p>
       <Link
         to="/pricing"
+        search={{ plan: tier }}
         className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-[15px] font-semibold"
         style={{
           background: 'linear-gradient(135deg, #0A84FF, #5E5CE6)',

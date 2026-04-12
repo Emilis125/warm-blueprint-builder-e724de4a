@@ -26,7 +26,7 @@ export function AdBanner({ variant = 'inline' }: AdBannerProps) {
             <p className="text-[13px] font-semibold text-foreground">Go Premium — Remove ads</p>
             <p className="text-[11px] text-muted-foreground">Enjoy an ad-free experience</p>
           </div>
-          <Link to="/pricing" className="shrink-0 px-3 py-1.5 rounded-lg text-[12px] font-bold" style={{ background: '#0A84FF', color: 'white' }}>
+          <Link to="/pricing" search={{ plan: 'premium' }} className="shrink-0 px-3 py-1.5 rounded-lg text-[12px] font-bold" style={{ background: '#0A84FF', color: 'white' }}>
             Upgrade
           </Link>
           <button onClick={() => setDismissed(true)} className="shrink-0">
@@ -54,7 +54,7 @@ export function AdBanner({ variant = 'inline' }: AdBannerProps) {
         <div className="h-16 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(255,149,0,0.15), rgba(255,214,10,0.15))', border: '1px dashed rgba(255,255,255,0.12)' }}>
           <p className="text-[13px] text-muted-foreground">Ad placeholder</p>
         </div>
-        <Link to="/pricing" className="mt-2 text-[11px] font-medium flex items-center gap-1" style={{ color: '#0A84FF' }}>
+        <Link to="/pricing" search={{ plan: 'premium' }} className="mt-2 text-[11px] font-medium flex items-center gap-1" style={{ color: '#0A84FF' }}>
           <Crown className="w-3 h-3" /> Remove ads with Premium
         </Link>
       </div>
