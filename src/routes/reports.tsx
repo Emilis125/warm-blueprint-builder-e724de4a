@@ -150,39 +150,6 @@ function ReportsPage() {
         <AdvancedAnalytics tips={allTips} isPremium={isPremium} />
       </div>
 
-      {/* Shift breakdown — Premium feature */}
-      {isPremium ? (
-        <GlassCard className="animate-fade-in-up stagger-4">
-          <h3 className="text-[15px] font-semibold text-foreground mb-3">Shift Performance</h3>
-          {(['morning', 'afternoon', 'evening'] as const).map(s => {
-            const shiftTips = tips.filter(t => t.shift === s);
-            const shiftTotal = shiftTips.reduce((sum, t) => sum + t.amount, 0);
-            const pct = total > 0 ? Math.round((shiftTotal / total) * 100) : 0;
-            return (
-              <div key={s} className="flex items-center justify-between py-2.5" style={{ borderBottom: s !== 'evening' ? '0.5px solid rgba(255,255,255,0.08)' : undefined }}>
-                <div className="flex items-center gap-2">
-                  <span className="text-[13px]">{s === 'morning' ? '🌅' : s === 'afternoon' ? '☀️' : '🌙'}</span>
-                  <span className="text-[14px] text-foreground capitalize">{s}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-20 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                    <div className="h-full rounded-full" style={{ width: `${pct}%`, background: '#0A84FF' }} />
-                  </div>
-                  <span className="text-[13px] font-medium text-foreground w-16 text-right">${shiftTotal.toFixed(0)}</span>
-                </div>
-              </div>
-            );
-          })}
-        </GlassCard>
-      ) : (
-        <div className="animate-fade-in-up stagger-4">
-          <UpgradePaywall
-            feature="Shift Performance"
-            description="See which shifts earn you the most. Premium only."
-            tier="premium"
-          />
-        </div>
-      )}
 
       <TabBar />
     </div>
