@@ -77,9 +77,8 @@ function ProfilePage() {
   const handleManageSubscription = async () => {
     setPortalLoading(true);
     try {
-      const env = getPaddleEnvironment();
       const { data, error } = await supabase.functions.invoke('customer-portal', {
-        body: { environment: env },
+        body: {},
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
