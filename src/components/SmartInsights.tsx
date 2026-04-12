@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { Crown, TrendingUp, Calendar, Clock } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
 import { GlassCard } from './GlassCard';
-import { SubscriptionSheet } from './SubscriptionSheet';
 
 interface SmartInsightsProps {
   bestDay: { date: string; total: number };
@@ -12,8 +11,6 @@ interface SmartInsightsProps {
 }
 
 export function SmartInsights({ bestDay, bestShift, weekTotal, weekTipCount, isPro }: SmartInsightsProps) {
-  const [sheetOpen, setSheetOpen] = useState(false);
-
   const avgPerShift = weekTipCount > 0 ? weekTotal / weekTipCount : 0;
   const bestDayLabel = bestDay.date
     ? new Date(bestDay.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' })
@@ -21,25 +18,22 @@ export function SmartInsights({ bestDay, bestShift, weekTotal, weekTipCount, isP
 
   if (!isPro) {
     return (
-      <>
-        <GlassCard className="animate-fade-in-up stagger-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-[15px] font-semibold text-foreground flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" style={{ color: '#FF9F0A' }} />
-              Smart Insights
-            </h3>
-            <button
-              onClick={() => setSheetOpen(true)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold"
-              style={{ background: 'rgba(10,132,255,0.15)', color: '#0A84FF' }}
-            >
-              <Crown className="w-3 h-3" /> PRO
-            </button>
-          </div>
-          <p className="text-[13px] text-muted-foreground">Discover your best earning days, peak shifts, and weekly trends. Upgrade to Pro.</p>
-        </GlassCard>
-        <SubscriptionSheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
-      </>
+      <GlassCard className="animate-fade-in-up stagger-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-[15px] font-semibold text-foreground flex items-center gap-2">
+            <TrendingUp className="w-4 h-4" style={{ color: '#FF9F0A' }} />
+            Smart Insights
+          </h3>
+          <Link
+            to="/pricing"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold"
+            style={{ background: 'rgba(10,132,255,0.15)', color: '#0A84FF' }}
+          >
+            <Crown className="w-3 h-3" /> PRO
+          </Link>
+        </div>
+        <p className="text-[13px] text-muted-foreground">Discover your best earning days, peak shifts, and weekly trends. Upgrade to Pro.</p>
+      </GlassCard>
     );
   }
 
