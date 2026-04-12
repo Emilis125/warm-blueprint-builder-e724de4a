@@ -67,7 +67,7 @@ function ProfilePage() {
   };
 
   const handleCloudBackup = () => {
-    toast.success('Cloud backup active!', { description: 'Your data is automatically synced to the cloud via Lovable Cloud.' });
+    toast.success('Cloud backup active!', { description: 'Your tips are synced to the cloud. Switch phones anytime — your data follows you.' });
   };
 
   const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
@@ -80,7 +80,7 @@ function ProfilePage() {
     { icon: CreditCard, label: 'Subscription', sub: planLabels[plan], onClick: () => navigate({ to: '/pricing' }), badge: plan !== 'free' },
     { icon: Calendar, label: 'Tax Year', sub: String(new Date().getFullYear()), onClick: undefined },
     { icon: Download, label: 'Data Export & Backup', sub: isPremium ? (backupDone ? 'Downloaded ✓' : 'Download all data as JSON') : 'Premium feature', onClick: isPremium ? handleBackup : undefined, premium: !isPremium },
-    { icon: Database, label: 'Cloud Backup', sub: isPro ? 'Sync data to cloud' : 'Pro feature', onClick: isPro ? handleCloudBackup : undefined, premium: !isPro },
+    { icon: Database, label: 'Cloud Backup', sub: isPremium ? 'Synced — switch phones anytime' : 'Premium feature', onClick: isPremium ? handleCloudBackup : undefined, premium: !isPremium },
   ];
 
   return (
