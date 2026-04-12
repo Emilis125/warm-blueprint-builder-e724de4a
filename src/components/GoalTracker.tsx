@@ -24,22 +24,20 @@ export function GoalTracker({ weekTotal, monthTotal, isPro, weeklyGoal, monthlyG
 
   if (!isPro) {
     return (
-      <GlassCard className="animate-fade-in-up stagger-4">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[15px] font-semibold text-foreground flex items-center gap-2">
-            <Target className="w-4 h-4" style={{ color: '#0A84FF' }} />
-            Goal Tracking
-          </h3>
-          <Link
-            to="/pricing"
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold"
-            style={{ background: 'rgba(10,132,255,0.15)', color: '#0A84FF' }}
-          >
-            <Crown className="w-3 h-3" /> PRO
-          </Link>
-        </div>
-        <p className="text-[13px] text-muted-foreground">Set weekly and monthly income goals to track your progress. Upgrade to Pro to unlock.</p>
-      </GlassCard>
+      <Link to="/pricing" className="block">
+        <GlassCard className="animate-fade-in-up stagger-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-[15px] font-semibold text-foreground flex items-center gap-2">
+              <Target className="w-4 h-4" style={{ color: '#0A84FF' }} />
+              Goal Tracking
+            </h3>
+            <span className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold" style={{ background: 'rgba(10,132,255,0.15)', color: '#0A84FF' }}>
+              <Crown className="w-3 h-3" /> PRO
+            </span>
+          </div>
+          <p className="text-[13px] text-muted-foreground">Set weekly and monthly income goals to track your progress. Upgrade to Pro to unlock.</p>
+        </GlassCard>
+      </Link>
     );
   }
 

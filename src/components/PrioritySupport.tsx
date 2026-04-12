@@ -10,22 +10,20 @@ interface PrioritySupportProps {
 export function PrioritySupport({ isPremium }: PrioritySupportProps) {
   if (!isPremium) {
     return (
-      <GlassCard className="animate-fade-in-up stagger-4">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[15px] font-semibold text-foreground flex items-center gap-2">
-            <Headphones className="w-4 h-4" style={{ color: '#FF375F' }} />
-            Priority Support
-          </h3>
-          <Link
-            to="/pricing"
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold"
-            style={{ background: 'rgba(255,214,10,0.15)', color: '#FFD60A' }}
-          >
-            <Crown className="w-3 h-3" /> PREMIUM
-          </Link>
-        </div>
-        <p className="text-[13px] text-muted-foreground">Get fast, dedicated support from our team. Premium members skip the queue.</p>
-      </GlassCard>
+      <Link to="/pricing" className="block">
+        <GlassCard className="animate-fade-in-up stagger-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-[15px] font-semibold text-foreground flex items-center gap-2">
+              <Headphones className="w-4 h-4" style={{ color: '#FF375F' }} />
+              Priority Support
+            </h3>
+            <span className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold" style={{ background: 'rgba(255,214,10,0.15)', color: '#FFD60A' }}>
+              <Crown className="w-3 h-3" /> PREMIUM
+            </span>
+          </div>
+          <p className="text-[13px] text-muted-foreground">Get fast, dedicated support from our team. Premium members skip the queue.</p>
+        </GlassCard>
+      </Link>
     );
   }
 
