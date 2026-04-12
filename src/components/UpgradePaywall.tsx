@@ -22,7 +22,7 @@ export function UpgradePaywall({ feature, description, tier = 'pro' }: UpgradePa
         </div>
         <h3 className="text-[17px] font-semibold text-foreground mb-1">{feature}</h3>
         <p className="text-[13px] text-muted-foreground mb-4">
-          {description || 'Upgrade to Pro to unlock this feature.'}
+          {description || `Upgrade to ${tier === 'premium' ? 'Premium' : 'Pro'} to unlock this feature.`}
         </p>
         <button
           onClick={() => setSheetOpen(true)}
