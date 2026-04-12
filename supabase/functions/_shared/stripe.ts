@@ -3,7 +3,7 @@ import Stripe from 'npm:stripe@17';
 const stripeKey = Deno.env.get('API_KEY_STRIPE')!;
 
 export function getStripe(): Stripe {
-  return new Stripe(stripeKey, { apiVersion: '2025-04-30.basil' });
+  return new Stripe(stripeKey);
 }
 
 export async function verifyStripeWebhook(req: Request): Promise<Stripe.Event> {
