@@ -40,10 +40,14 @@ export const Route = createRootRoute({
       { name: "description", content: "Log tips in seconds. Stay tax-ready all year. Built for hospitality and gig workers." },
       { name: "author", content: "TipTracker Pro" },
       { property: "og:title", content: "TipTracker Pro" },
-      { property: "og:description", content: "Log tips in seconds. Stay tax-ready all year." },
+      { property: "og:description", content: "Log tips in seconds. Stay tax-ready all year. Built for hospitality and gig workers." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "TipTracker Pro" },
+      { name: "twitter:description", content: "Log tips in seconds. Stay tax-ready all year. Built for hospitality and gig workers." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/90abbb6b-64c0-4766-a5b2-97fb96ee7cb5" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/90abbb6b-64c0-4766-a5b2-97fb96ee7cb5" },
     ],
     links: [
       {
