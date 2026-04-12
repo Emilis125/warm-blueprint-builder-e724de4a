@@ -121,8 +121,9 @@
     min-height: 100vh;
   }
 
-  html {
-    background: #0D1B3E;
+  html, body, #root {
+    background: linear-gradient(160deg, #0D1B3E 0%, #1A1040 50%, #0D2818 100%);
+    background-attachment: fixed;
   }
 }
 

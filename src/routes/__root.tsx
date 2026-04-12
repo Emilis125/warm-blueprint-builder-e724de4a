@@ -85,7 +85,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body style={{ background: 'linear-gradient(160deg, #0D1B3E 0%, #1A1040 50%, #0D2818 100%)', minHeight: '100vh' }}>
+      <body style={{ background: 'linear-gradient(160deg, #0D1B3E 0%, #1A1040 50%, #0D2818 100%)', backgroundAttachment: 'fixed', minHeight: '100vh' }}>
         {children}
         <Scripts />
         <script dangerouslySetInnerHTML={{ __html: `
