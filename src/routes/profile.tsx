@@ -144,7 +144,12 @@ function ProfilePage() {
             <Crown className="w-5 h-5" style={{ color: '#0A84FF' }} />
           </div>
           <div className="flex-1 text-left">
-            <p className="text-[15px] font-semibold text-foreground">Upgrade to Pro</p>
+            <div className="flex items-center gap-2">
+              <p className="text-[15px] font-semibold text-foreground">Upgrade to Pro</p>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: 'rgba(48,209,88,0.25)', color: '#30D158' }}>
+                7 DAYS FREE
+              </span>
+            </div>
             <p className="text-[13px] text-muted-foreground">Unlock unlimited features</p>
           </div>
           <ChevronRight className="w-4 h-4" style={{ color: '#0A84FF' }} />
