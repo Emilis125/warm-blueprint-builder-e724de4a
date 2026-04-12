@@ -18,22 +18,20 @@ export function SmartInsights({ bestDay, bestShift, weekTotal, weekTipCount, isP
 
   if (!isPro) {
     return (
-      <GlassCard className="animate-fade-in-up stagger-4">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[15px] font-semibold text-foreground flex items-center gap-2">
-            <TrendingUp className="w-4 h-4" style={{ color: '#FF9F0A' }} />
-            Smart Insights
-          </h3>
-          <Link
-            to="/pricing"
-            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold"
-            style={{ background: 'rgba(10,132,255,0.15)', color: '#0A84FF' }}
-          >
-            <Crown className="w-3 h-3" /> PRO
-          </Link>
-        </div>
-        <p className="text-[13px] text-muted-foreground">Discover your best earning days, peak shifts, and weekly trends. Upgrade to Pro.</p>
-      </GlassCard>
+      <Link to="/pricing" className="block">
+        <GlassCard className="animate-fade-in-up stagger-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-[15px] font-semibold text-foreground flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" style={{ color: '#FF9F0A' }} />
+              Smart Insights
+            </h3>
+            <span className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold" style={{ background: 'rgba(10,132,255,0.15)', color: '#0A84FF' }}>
+              <Crown className="w-3 h-3" /> PRO
+            </span>
+          </div>
+          <p className="text-[13px] text-muted-foreground">Discover your best earning days, peak shifts, and weekly trends. Upgrade to Pro.</p>
+        </GlassCard>
+      </Link>
     );
   }
 
