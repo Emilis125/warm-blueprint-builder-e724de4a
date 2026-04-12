@@ -78,16 +78,27 @@ async function handleSubscriptionCreated(data: any, env: PaddleEnv) {
 }
 
 async function handleSubscriptionUpdated(data: any, env: PaddleEnv) {
-  const { id, status, currentBillingPeriod, scheduledChange } = data;
+  const { id, status, currentBillingPeriod, scheduledChange, items } = data;
+
+  const updateData: Record<string, any> = {
+    status: status,
+    current_period_start: currentBillingPeriod?.startsAt,
+    current_period_end: currentBillingPeriod?.endsAt,
+    cancel_at_period_end: scheduledChange?.action === 'cancel',
+    updated_at: new Date().toISOString(),
+  };
+
+  // Update product/price if items are present (plan change)
+  if (items?.length) {
+    const item = items[0];
+    updateData.price_id = item.price.importMeta?.externalId || item.price.id;
+    if (item.product) {
+      updateData.product_id = item.product.importMeta?.externalId || item.product.id;
+    }
+  }
 
   await supabase.from('subscriptions')
-    .update({
-      status: status,
-      current_period_start: currentBillingPeriod?.startsAt,
-      current_period_end: currentBillingPeriod?.endsAt,
-      cancel_at_period_end: scheduledChange?.action === 'cancel',
-      updated_at: new Date().toISOString(),
-    })
+    .update(updateData)
     .eq('paddle_subscription_id', id)
     .eq('environment', env);
 }
