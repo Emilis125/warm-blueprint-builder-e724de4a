@@ -28,7 +28,7 @@ export function useSubscription() {
         .from('subscriptions')
         .select('product_id, price_id, status, current_period_end, cancel_at_period_end')
         .eq('user_id', user.id)
-        .eq('environment', 'live')
+        .eq('environment', typeof window !== 'undefined' && import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN?.startsWith('pk_test_') ? 'sandbox' : 'live')
         .maybeSingle();
 
       setSubscription(data);
