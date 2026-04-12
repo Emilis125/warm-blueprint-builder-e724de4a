@@ -86,13 +86,7 @@ function TermsPage() {
         <section>
           <h2 className="text-[16px] font-semibold text-foreground mb-2">9. Payments & Subscriptions</h2>
           <p>
-            Our order process is conducted by our online reseller <strong>Paddle.com</strong>. Paddle.com is the Merchant of Record for all our orders. Paddle provides all customer service inquiries and handles returns.
-          </p>
-          <p className="mt-2">
-            For full details on payment processing, billing, taxes, cancellation, and refund mechanics, please refer to{' '}
-            <a href="https://www.paddle.com/legal/checkout-buyer-terms" target="_blank" rel="noopener noreferrer" style={{ color: '#0A84FF' }}>
-              Paddle's Buyer Terms
-            </a>.
+            Payments are processed securely by <strong>Stripe</strong>. Stripe handles all payment processing, billing, and card data securely in compliance with PCI DSS standards.
           </p>
           <p className="mt-2">
             Subscriptions renew automatically at the end of each billing period unless cancelled. Pro plan subscriptions include a 7-day free trial; you will not be charged until the trial ends. You may cancel at any time through the subscription management portal.

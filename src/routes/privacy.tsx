@@ -57,7 +57,7 @@ function PrivacyPage() {
         <section>
           <h2 className="text-[16px] font-semibold text-foreground mb-2">4. Who We Share Data With</h2>
           <ul className="list-disc ml-5 space-y-1">
-            <li><strong>Paddle.com</strong> — our Merchant of Record, for payment processing, subscription management, tax compliance, and invoicing</li>
+            <li><strong>Stripe</strong> — our payment processor, for secure payment processing, subscription management, and billing</li>
             <li><strong>Hosting & infrastructure providers</strong> — for securely hosting the application and database</li>
             <li><strong>Analytics providers</strong> — for anonymised usage analytics to improve the Service</li>
             <li><strong>Professional advisers</strong> — legal and accounting advisers, where necessary</li>
