@@ -1,38 +1,30 @@
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useState, useCallback } from "react";
+import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
+
+interface CheckoutOptions {
+  priceId: string;
+  quantity?: number;
+  customerEmail?: string;
+  userId?: string;
+  returnUrl?: string;
+}
 
 export function useStripeCheckout() {
-  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [options, setOptions] = useState<CheckoutOptions | null>(null);
 
-  const openCheckout = async (options: {
-    priceId: string;
-    successUrl?: string;
-    cancelUrl?: string;
-  }) => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: {
-          priceId: options.priceId,
-          successUrl: options.successUrl || `${window.location.origin}/pricing?checkout=success`,
-          cancelUrl: options.cancelUrl || `${window.location.origin}/pricing`,
-        },
-      });
+  const openCheckout = useCallback((opts: CheckoutOptions) => {
+    setOptions(opts);
+    setIsOpen(true);
+  }, []);
 
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
+  const closeCheckout = useCallback(() => {
+    setIsOpen(false);
+    setOptions(null);
+  }, []);
 
-      if (data?.url) {
-        window.location.href = data.url;
-      }
-    } catch (err: any) {
-      console.error("Checkout error:", err);
-      const { toast } = await import("sonner");
-      toast.error("Something went wrong", { description: err?.message || "Please try again." });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const CheckoutForm =
+    isOpen && options ? () => <StripeEmbeddedCheckout {...options} /> : null;
 
-  return { openCheckout, loading };
+  return { openCheckout, closeCheckout, isOpen, CheckoutForm };
 }
