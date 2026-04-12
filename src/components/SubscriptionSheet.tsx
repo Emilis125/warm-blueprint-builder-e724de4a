@@ -42,7 +42,7 @@ const plans = [
 ];
 
 export function SubscriptionSheet({ open, onClose }: SubscriptionSheetProps) {
-  const { plan: currentPlan, setPlan } = useSubscription();
+  const { plan: currentPlan } = useSubscription();
   const [selected, setSelected] = useState<'free' | 'pro' | 'premium'>('pro');
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
 
@@ -155,7 +155,7 @@ export function SubscriptionSheet({ open, onClose }: SubscriptionSheetProps) {
 
         {/* CTA */}
         <button
-          onClick={() => { setPlan(selected); onClose(); }}
+          onClick={() => { onClose(); }}
           className="w-full h-[54px] rounded-2xl text-[17px] font-bold text-foreground"
           style={{
             background: selected === 'premium' ? 'linear-gradient(135deg, #FFD60A, #FF9F0A)' : '#0A84FF',
