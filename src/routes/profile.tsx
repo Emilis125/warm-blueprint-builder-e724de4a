@@ -7,14 +7,14 @@ import { SubscriptionSheet } from '@/components/SubscriptionSheet';
 import { AdBanner } from '@/components/AdBanner';
 import { NotificationSheet } from '@/components/NotificationSheet';
 import { WorkplaceSheet } from '@/components/WorkplaceSheet';
-import { CategoriesSheet } from '@/components/CategoriesSheet';
+
 import { PrioritySupport } from '@/components/PrioritySupport';
 import { useSubscription } from '@/hooks/use-subscription';
 import { useSettings } from '@/hooks/use-settings';
 import { useTips } from '@/hooks/use-tips';
 import { useAuth } from '@/hooks/use-auth';
 import { supabase } from '@/integrations/supabase/client';
-import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Tag, Database, Download, CheckCircle } from 'lucide-react';
+import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Database, Download, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/profile')({
@@ -51,7 +51,7 @@ function ProfilePage() {
   const [subOpen, setSubOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [wpOpen, setWpOpen] = useState(false);
-  const [catOpen, setCatOpen] = useState(false);
+  
   const [backupDone, setBackupDone] = useState(false);
   const { plan, isPro, isPremium } = useSubscription();
   const { monthTipCount, allTips } = useTips();
@@ -78,7 +78,7 @@ function ProfilePage() {
   const settings = [
     { icon: Bell, label: 'Notifications', sub: 'Daily reminder at 11:00 PM', onClick: () => setNotifOpen(true) },
     { icon: Briefcase, label: 'Workplace', sub: isPro ? `${workplaces.length} workplace${workplaces.length > 1 ? 's' : ''}` : 'Main Job', onClick: isPro ? () => setWpOpen(true) : undefined, premium: !isPro },
-    { icon: Tag, label: 'Custom Categories', sub: isPremium ? 'Manage categories' : 'Premium feature', onClick: isPremium ? () => setCatOpen(true) : undefined, premium: !isPremium },
+    
     { icon: CreditCard, label: 'Subscription', sub: planLabels[plan], onClick: () => setSubOpen(true), badge: plan !== 'free' },
     { icon: Calendar, label: 'Tax Year', sub: String(new Date().getFullYear()), onClick: undefined },
     { icon: Download, label: 'Data Export & Backup', sub: isPremium ? (backupDone ? 'Downloaded ✓' : 'Download all data as JSON') : 'Premium feature', onClick: isPremium ? handleBackup : undefined, premium: !isPremium },
@@ -204,7 +204,7 @@ function ProfilePage() {
         onAdd={addWorkplace}
         onRemove={removeWorkplace}
       />
-      <CategoriesSheet open={catOpen} onClose={() => setCatOpen(false)} />
+      
       <TabBar />
     </div>
   );
