@@ -77,8 +77,11 @@ function ProfilePage() {
   const handleManageSubscription = async () => {
     setPortalLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('customer-portal', {
-        body: {},
+      const { data, error } = await supabase.functions.invoke('create-portal-session', {
+        body: {
+          returnUrl: window.location.href,
+          environment: (await import('@/lib/stripe')).getStripeEnvironment(),
+        },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);

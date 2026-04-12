@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useStripeCheckout } from '@/hooks/useStripeCheckout';
 import { Check, X, Crown, Zap, Star, ChevronLeft, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { getStripeEnvironment } from '@/lib/stripe';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -71,14 +72,14 @@ function PricingPage() {
   const { plan: searchPlan, checkout } = Route.useSearch();
   const [selected, setSelected] = useState<'free' | 'pro' | 'premium'>(searchPlan || 'pro');
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
-  const { openCheckout, loading: checkoutLoading } = useStripeCheckout();
+  const { openCheckout, closeCheckout, isOpen: checkoutOpen, CheckoutForm } = useStripeCheckout();
   const [actionLoading, setActionLoading] = useState(false);
 
   const isActive = subscription?.status === 'active' || subscription?.status === 'trialing';
 
   const handleSubscribe = async () => {
     if (selected === currentPlan) return;
-    if (actionLoading || checkoutLoading) return;
+    if (actionLoading || checkoutOpen) return;
 
     // Downgrade to free = open customer portal to cancel
     if (selected === 'free') {
@@ -88,38 +89,24 @@ function PricingPage() {
 
     const priceId = priceIdMap[selected][billing];
 
-    // If user already has an active subscription, update it
-    if (isActive && currentPlan !== 'free') {
-      setActionLoading(true);
-      try {
-        const { data, error } = await supabase.functions.invoke('update-subscription', {
-          body: { priceId },
-        });
-        if (error) throw error;
-        if (data?.error) throw new Error(data.error);
-        toast.success('Plan updated!', { description: `You're now on the ${selected === 'premium' ? 'Premium' : 'Pro'} plan.` });
-      } catch (err: any) {
-        console.error('Update error:', err);
-        toast.error('Failed to update plan', { description: err.message });
-      } finally {
-        setActionLoading(false);
-      }
-      return;
-    }
-
-    // New subscription — open Stripe checkout
-    await openCheckout({
+    // Open Stripe embedded checkout
+    openCheckout({
       priceId,
-      successUrl: `${window.location.origin}/pricing?checkout=success`,
-      cancelUrl: `${window.location.origin}/pricing`,
+      quantity: 1,
+      customerEmail: user?.email || undefined,
+      userId: user?.id || "",
+      returnUrl: `${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
     });
   };
 
   const openCustomerPortal = async () => {
     setActionLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('customer-portal', {
-        body: {},
+      const { data, error } = await supabase.functions.invoke('create-portal-session', {
+        body: {
+          returnUrl: window.location.href,
+          environment: getStripeEnvironment(),
+        },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
@@ -135,7 +122,7 @@ function PricingPage() {
   };
 
   const isSuccess = checkout === 'success';
-  const loading = checkoutLoading || actionLoading;
+  const loading = checkoutOpen || actionLoading;
 
   const getButtonText = () => {
     if (currentPlan === selected) return 'Current Plan';
@@ -144,8 +131,27 @@ function PricingPage() {
       const tiers = { free: 0, pro: 1, premium: 2 };
       return tiers[selected] > tiers[currentPlan] ? `Upgrade to ${selected === 'premium' ? 'Premium' : 'Pro'}` : `Switch to ${selected === 'premium' ? 'Premium' : 'Pro'}`;
     }
-    return selected === 'pro' ? 'Start 7-Day Free Trial' : 'Subscribe to Premium';
+    return `Subscribe to ${selected === 'premium' ? 'Premium' : 'Pro'}`;
   };
+
+  if (checkoutOpen && CheckoutForm) {
+    return (
+      <div className="min-h-screen max-w-[430px] mx-auto pb-32">
+        <div className="px-4 pt-12">
+          <div className="flex items-center gap-3 mb-5 animate-fade-in-up">
+            <button onClick={closeCheckout} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.12)' }}>
+              <ChevronLeft className="w-4 h-4 text-foreground" />
+            </button>
+            <div>
+              <h1 className="text-[28px] font-bold text-foreground">Checkout</h1>
+              <p className="text-[13px] text-muted-foreground">Complete your subscription</p>
+            </div>
+          </div>
+          <CheckoutForm />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen max-w-[430px] mx-auto pb-32">
