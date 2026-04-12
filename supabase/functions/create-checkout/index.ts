@@ -36,8 +36,8 @@ serve(async (req) => {
     const stripePrice = prices.data[0];
     const isRecurring = stripePrice.type === "recurring";
 
-    // Add 7-day free trial for Pro plans
-    const isProPlan = priceId.startsWith("pro_");
+    // Add 7-day free trial for Pro monthly only (not annual)
+    const isProMonthly = priceId === "pro_monthly";
 
     const session = await stripe.checkout.sessions.create({
       line_items: [{ price: stripePrice.id, quantity: quantity || 1 }],
@@ -45,13 +45,13 @@ serve(async (req) => {
       ui_mode: "embedded_page",
       return_url: returnUrl || `${req.headers.get("origin")}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
       ...(customerEmail && { customer_email: customerEmail }),
-      ...(isRecurring && isProPlan && {
+      ...(isRecurring && isProMonthly && {
         subscription_data: {
           trial_period_days: 7,
           ...(userId && { metadata: { userId } }),
         },
       }),
-      ...(isRecurring && !isProPlan && userId && {
+      ...(isRecurring && !isProMonthly && userId && {
         subscription_data: { metadata: { userId } },
       }),
       ...(userId && { metadata: { userId } }),
