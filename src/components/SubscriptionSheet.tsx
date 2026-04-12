@@ -36,7 +36,7 @@ const plans = [
     period: { monthly: '/month', annual: '/year' },
     icon: Crown,
     color: '#FFD60A',
-    features: ['Everything in Pro', 'Ad-free experience', 'AI-powered insights', 'Advanced analytics', 'Priority support', 'Custom categories', 'Data export & backup'],
+    features: ['Everything in Pro', 'Ad-free experience', 'AI-powered insights', 'Advanced analytics', 'Priority support', 'Data export & backup'],
     missing: [],
   },
 ];
