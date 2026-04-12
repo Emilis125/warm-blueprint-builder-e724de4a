@@ -42,14 +42,14 @@ export function LogTipsSheet({ open, onClose }: LogTipsSheetProps) {
     if (atLimit) return;
     const val = parseFloat(amount) || 0;
     if (val <= 0) return;
-    const cashAmount = mode === 'cash' ? val : mode === 'total' ? val * 0.4 : 0;
-    const cardAmount = mode === 'card' ? val : mode === 'total' ? val * 0.6 : 0;
+    const cashAmount = mode === 'cash' ? val : 0;
+    const cardAmount = mode === 'card' ? val : 0;
     const totalAmount = mode === 'total' ? val : cashAmount + cardAmount;
 
     addTip({
       amount: totalAmount,
-      cashAmount: mode === 'total' ? val * 0.4 : cashAmount,
-      cardAmount: mode === 'total' ? val * 0.6 : cardAmount,
+      cashAmount,
+      cardAmount,
       shift,
       workplace,
       date: new Date().toISOString().split('T')[0],
