@@ -224,9 +224,9 @@ function PricingPage() {
                           POPULAR
                         </span>
                       )}
-                      {'trialBadge' in p && p.trialBadge && (
+                      {p.id === 'pro' && (
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: 'rgba(48,209,88,0.25)', color: '#30D158' }}>
-                          {p.trialBadge}
+                          7 DAYS FREE
                         </span>
                       )}
                       {isCurrent && (
