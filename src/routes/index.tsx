@@ -92,18 +92,6 @@ function Dashboard() {
         />
       </div>
 
-      {/* Log Tips Button */}
-      <button
-        onClick={() => setLogOpen(true)}
-        className="w-full h-[54px] mt-5 text-[17px] font-bold text-foreground rounded-2xl animate-fade-in-up stagger-4"
-        style={{
-          background: 'rgba(10,132,255,0.75)',
-          backdropFilter: 'blur(12px)',
-          border: '1px solid rgba(10,132,255,0.60)',
-        }}
-      >
-        Log Tips +
-      </button>
 
       {/* Sticky upgrade banner */}
       <AdBanner variant="sticky" />
