@@ -1,20 +1,42 @@
-import Stripe from 'npm:stripe@17';
+import Stripe from "npm:stripe@17";
 
-const stripeKey = Deno.env.get('API_KEY_STRIPE')!;
+export type StripeEnv = "sandbox" | "live";
 
-export function getStripe(): Stripe {
-  return new Stripe(stripeKey);
-}
+const GATEWAY_BASE = "https://stripe-gateway.lovable.dev";
 
-export async function verifyStripeWebhook(req: Request): Promise<Stripe.Event> {
-  const signature = req.headers.get('stripe-signature');
-  const body = await req.text();
-  const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET')!;
+export function createStripeClient(env: StripeEnv): Stripe {
+  const key =
+    env === "live"
+      ? Deno.env.get("STRIPE_LIVE_API_KEY")
+      : Deno.env.get("STRIPE_SANDBOX_API_KEY");
 
-  if (!signature || !body) {
-    throw new Error('Missing signature or body');
+  if (!key) {
+    throw new Error(`Missing Stripe API key for environment: ${env}`);
   }
 
-  const stripe = getStripe();
-  return stripe.webhooks.constructEvent(body, signature, webhookSecret);
+  return new Stripe(key, {
+    httpClient: Stripe.createFetchHttpClient(),
+    apiVersion: "2025-04-30.basil",
+  });
+}
+
+export async function verifyWebhook(
+  req: Request,
+  env: StripeEnv
+): Promise<{ event: Stripe.Event; body: string }> {
+  const signature = req.headers.get("stripe-signature");
+  const body = await req.text();
+
+  const secret =
+    env === "live"
+      ? Deno.env.get("PAYMENTS_LIVE_WEBHOOK_SECRET")
+      : Deno.env.get("PAYMENTS_SANDBOX_WEBHOOK_SECRET");
+
+  if (!signature || !body || !secret) {
+    throw new Error("Missing signature, body, or webhook secret");
+  }
+
+  const stripe = createStripeClient(env);
+  const event = stripe.webhooks.constructEvent(body, signature, secret);
+  return { event, body };
 }
