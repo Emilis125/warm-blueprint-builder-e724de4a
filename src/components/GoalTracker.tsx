@@ -24,7 +24,7 @@ export function GoalTracker({ weekTotal, monthTotal, isPro, weeklyGoal, monthlyG
 
   if (!isPro) {
     return (
-      <Link to="/pricing" className="block">
+      <Link to="/pricing" search={{ plan: 'pro' }} className="block">
         <GlassCard className="animate-fade-in-up stagger-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-[15px] font-semibold text-foreground flex items-center gap-2">

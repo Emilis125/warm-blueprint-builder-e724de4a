@@ -31,6 +31,7 @@ export function TipLimitBanner({ used, limit }: TipLimitBannerProps) {
           </p>
           <Link
             to="/pricing"
+            search={{ plan: 'pro' }}
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-[13px] font-semibold"
             style={{ background: '#0A84FF', color: 'white' }}
           >
