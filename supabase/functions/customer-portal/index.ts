@@ -1,5 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
-import { getPaddleClient, type PaddleEnv } from '../_shared/paddle.ts';
+import { getStripe } from '../_shared/stripe.ts';
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
@@ -18,7 +18,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Get user from auth header
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
@@ -31,29 +30,26 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
     }
 
-    const { environment } = await req.json();
-    const env = (environment || 'sandbox') as PaddleEnv;
-
-    // Look up subscription
+    // Look up subscription to get Stripe customer ID
     const { data: sub } = await supabase
       .from('subscriptions')
-      .select('paddle_customer_id, paddle_subscription_id')
+      .select('paddle_customer_id')
       .eq('user_id', user.id)
-      .eq('environment', env)
+      .eq('environment', 'live')
       .maybeSingle();
 
-    if (!sub) {
+    if (!sub?.paddle_customer_id) {
       return new Response(JSON.stringify({ error: 'No subscription found' }), { status: 404, headers: corsHeaders });
     }
 
-    const paddle = getPaddleClient(env);
-    const portalSession = await paddle.customerPortalSessions.create(
-      sub.paddle_customer_id,
-      [sub.paddle_subscription_id]
-    );
+    const stripe = getStripe();
+    const session = await stripe.billingPortal.sessions.create({
+      customer: sub.paddle_customer_id,
+      return_url: 'https://warm-blueprint-builder.lovable.app/pricing',
+    });
 
-    return new Response(JSON.stringify({ url: portalSession.urls.general.overview }), { headers: corsHeaders });
-  } catch (e) {
+    return new Response(JSON.stringify({ url: session.url }), { headers: corsHeaders });
+  } catch (e: any) {
     console.error('Portal error:', e);
     return new Response(JSON.stringify({ error: 'Failed to create portal session' }), { status: 500, headers: corsHeaders });
   }
