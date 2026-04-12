@@ -5,6 +5,7 @@ import { SubscriptionSheet } from './SubscriptionSheet';
 interface UpgradePaywallProps {
   feature: string;
   description?: string;
+  tier?: 'pro' | 'premium';
 }
 
 export function UpgradePaywall({ feature, description }: UpgradePaywallProps) {
