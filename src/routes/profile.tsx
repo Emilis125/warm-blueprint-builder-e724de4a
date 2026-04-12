@@ -72,6 +72,25 @@ function ProfilePage() {
     toast.success('Cloud backup active!', { description: 'Your tips are synced to the cloud. Switch phones anytime — your data follows you.' });
   };
 
+  const isActive = subscription?.status === 'active' || subscription?.status === 'trialing';
+
+  const handleManageSubscription = async () => {
+    setPortalLoading(true);
+    try {
+      const env = getPaddleEnvironment();
+      const { data, error } = await supabase.functions.invoke('customer-portal', {
+        body: { environment: env },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (data?.url) window.open(data.url, '_blank');
+    } catch {
+      toast.error('Could not open subscription management');
+    } finally {
+      setPortalLoading(false);
+    }
+  };
+
   const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
   const initials = displayName.slice(0, 2).toUpperCase();
 
