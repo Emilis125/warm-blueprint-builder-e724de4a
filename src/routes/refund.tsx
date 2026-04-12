@@ -73,7 +73,8 @@ function RefundPage() {
         <section>
           <h2 className="text-[16px] font-semibold text-foreground mb-2">Contact</h2>
           <p>
-            If you have any questions about our refund policy, please contact EJGroup through the in-app support feature.
+            If you have any questions about our refund policy, please contact EJGroup through the in-app support feature or email us at{' '}
+            <a href="mailto:support@ejgroup.co" style={{ color: '#0A84FF' }}>support@ejgroup.co</a>.
           </p>
         </section>
       </div>
