@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './use-auth';
 import { useCallback } from 'react';
+import { useSubscription } from './use-subscription';
 
 export interface TipEntry {
   id: string;
@@ -31,9 +32,10 @@ function mapRow(row: any): TipEntry {
 
 export function useTips() {
   const { user } = useAuth();
+  const { isPro } = useSubscription();
   const queryClient = useQueryClient();
 
-  const { data: allTips = [] } = useQuery({
+  const { data: allTipsRaw = [] } = useQuery({
     queryKey: ['tips', user?.id],
     queryFn: async () => {
       if (!user) return [];
@@ -47,6 +49,14 @@ export function useTips() {
     },
     enabled: !!user,
   });
+
+  // Free users: 30-day history restriction
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const cutoffStr = thirtyDaysAgo.toISOString().split('T')[0];
+
+  const allTips = isPro ? allTipsRaw : allTipsRaw.filter(t => t.date >= cutoffStr);
+  const hasHiddenTips = !isPro && allTipsRaw.length > allTips.length;
 
   const addTipMutation = useMutation({
     mutationFn: async (entry: Omit<TipEntry, 'id' | 'createdAt'>) => {
@@ -123,6 +133,9 @@ export function useTips() {
     if (total > bestShiftTotal) { bestShiftName = shift; bestShiftTotal = total; }
   }
 
+  // Month tip count uses raw data (for limit tracking, not history restriction)
+  const monthTipCountRaw = allTipsRaw.filter(t => t.date >= startOfMonth).length;
+
   return {
     allTips,
     todayTotal,
@@ -134,11 +147,12 @@ export function useTips() {
     weekTips,
     monthTotal,
     monthTips,
-    monthTipCount: monthTips.length,
+    monthTipCount: monthTipCountRaw,
     yearTips,
     dailyTotals,
     bestDay: { date: bestDate, total: bestTotal },
     bestShift: { shift: bestShiftName, total: bestShiftTotal },
     addTip: useCallback((entry: Omit<TipEntry, 'id' | 'createdAt'>) => addTipMutation.mutate(entry), [addTipMutation]),
+    hasHiddenTips,
   };
 }
