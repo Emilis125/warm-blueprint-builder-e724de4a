@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TaxRouteImport } from './routes/tax'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LogRouteImport } from './routes/log'
 import { Route as IndexRouteImport } from './routes/index'
@@ -29,6 +30,11 @@ const ReportsRoute = ReportsRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/log': typeof LogRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/reports': typeof ReportsRoute
   '/tax': typeof TaxRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/log': typeof LogRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/reports': typeof ReportsRoute
   '/tax': typeof TaxRoute
@@ -68,22 +76,39 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/log': typeof LogRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/reports': typeof ReportsRoute
   '/tax': typeof TaxRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/log' | '/login' | '/profile' | '/reports' | '/tax'
+  fullPaths:
+    | '/'
+    | '/log'
+    | '/login'
+    | '/pricing'
+    | '/profile'
+    | '/reports'
+    | '/tax'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/log' | '/login' | '/profile' | '/reports' | '/tax'
-  id: '__root__' | '/' | '/log' | '/login' | '/profile' | '/reports' | '/tax'
+  to: '/' | '/log' | '/login' | '/pricing' | '/profile' | '/reports' | '/tax'
+  id:
+    | '__root__'
+    | '/'
+    | '/log'
+    | '/login'
+    | '/pricing'
+    | '/profile'
+    | '/reports'
+    | '/tax'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LogRoute: typeof LogRoute
   LoginRoute: typeof LoginRoute
+  PricingRoute: typeof PricingRoute
   ProfileRoute: typeof ProfileRoute
   ReportsRoute: typeof ReportsRoute
   TaxRoute: typeof TaxRoute
@@ -110,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -140,6 +172,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LogRoute: LogRoute,
   LoginRoute: LoginRoute,
+  PricingRoute: PricingRoute,
   ProfileRoute: ProfileRoute,
   ReportsRoute: ReportsRoute,
   TaxRoute: TaxRoute,
