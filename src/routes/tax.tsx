@@ -158,11 +158,10 @@ function TaxPage() {
   const card = yearTips.reduce((s, t) => s + t.cardAmount, 0);
   const shifts = yearTips.length;
 
-  const handleExportPDF = () => {
-    const html = generatePDFContent(yearTips, year);
-    downloadFile(html, `TipTracker_${year}_Tax_Report.html`, 'text/html');
+  const handleExportPDF = async () => {
+    await generatePDF(yearTips, year);
     setExported('pdf');
-    toast.success('Tax report downloaded!', { description: 'Open the HTML file in your browser and print to PDF.' });
+    toast.success('Tax report downloaded!', { description: 'Your PDF tax report has been saved.' });
   };
 
   const handleExportCSV = () => {
