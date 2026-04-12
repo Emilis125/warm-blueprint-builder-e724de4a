@@ -13,7 +13,8 @@ import { useSettings } from '@/hooks/use-settings';
 import { useTips } from '@/hooks/use-tips';
 import { useAuth } from '@/hooks/use-auth';
 import { supabase } from '@/integrations/supabase/client';
-import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Database, Download, CheckCircle } from 'lucide-react';
+import { getPaddleEnvironment } from '@/lib/paddle';
+import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Database, Download, CheckCircle, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/profile')({
@@ -51,8 +52,9 @@ function ProfilePage() {
   const [wpOpen, setWpOpen] = useState(false);
   
   const [backupDone, setBackupDone] = useState(false);
-  const { plan, isPro, isPremium } = useSubscription();
+  const { plan, isPro, isPremium, subscription } = useSubscription();
   const { monthTipCount, allTips } = useTips();
+  const [portalLoading, setPortalLoading] = useState(false);
   const { workplaces, addWorkplace, removeWorkplace } = useSettings();
   const [selectedWp, setSelectedWp] = useState(workplaces[0] || 'Main Job');
 
@@ -70,6 +72,25 @@ function ProfilePage() {
     toast.success('Cloud backup active!', { description: 'Your tips are synced to the cloud. Switch phones anytime — your data follows you.' });
   };
 
+  const isActive = subscription?.status === 'active' || subscription?.status === 'trialing';
+
+  const handleManageSubscription = async () => {
+    setPortalLoading(true);
+    try {
+      const env = getPaddleEnvironment();
+      const { data, error } = await supabase.functions.invoke('customer-portal', {
+        body: { environment: env },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (data?.url) window.open(data.url, '_blank');
+    } catch {
+      toast.error('Could not open subscription management');
+    } finally {
+      setPortalLoading(false);
+    }
+  };
+
   const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
   const initials = displayName.slice(0, 2).toUpperCase();
 
@@ -78,6 +99,7 @@ function ProfilePage() {
     { icon: Briefcase, label: 'Workplace', sub: isPro ? `${workplaces.length} workplace${workplaces.length > 1 ? 's' : ''}` : 'Main Job', onClick: isPro ? () => setWpOpen(true) : undefined, premium: !isPro },
     
     { icon: CreditCard, label: 'Subscription', sub: planLabels[plan], onClick: () => navigate({ to: '/pricing' }), badge: plan !== 'free' },
+    ...(isActive && plan !== 'free' ? [{ icon: Settings, label: 'Manage Subscription', sub: portalLoading ? 'Opening…' : 'Billing, cancel, invoices', onClick: handleManageSubscription }] : []),
     { icon: Calendar, label: 'Tax Year', sub: String(new Date().getFullYear()), onClick: undefined },
     { icon: Download, label: 'Data Export & Backup', sub: isPremium ? (backupDone ? 'Downloaded ✓' : 'Download all data as JSON') : 'Premium feature', onClick: isPremium ? handleBackup : undefined, premium: !isPremium },
     { icon: Database, label: 'Cloud Backup', sub: isPremium ? 'Synced — switch phones anytime' : 'Premium feature', onClick: isPremium ? handleCloudBackup : undefined, premium: !isPremium },

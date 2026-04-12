@@ -7,6 +7,9 @@ import { useAuth } from '@/hooks/use-auth';
 import { usePaddleCheckout } from '@/hooks/usePaddleCheckout';
 import { PaymentTestModeBanner } from '@/components/PaymentTestModeBanner';
 import { Check, X, Crown, Zap, Star, ChevronLeft, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { getPaddleEnvironment } from '@/lib/paddle';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 const pricingSearchSchema = z.object({
@@ -34,7 +37,7 @@ const plans = [
     icon: Star,
     color: 'rgba(255,255,255,0.60)',
     features: ['Daily logging', 'Basic weekly chart', 'Cash & card split', '30-day history'],
-    missing: ['Unlimited history', 'Tax export (PDF & CSV)', 'Advanced reports & insights', 'Goal tracking', 'Multi-job tracking', 'Cloud backup', 'Ad-free experience', 'AI insights', 'Priority support'],
+    missing: ['Unlimited history', 'Tax export (PDF & CSV)', 'Advanced reports & insights', 'Goal tracking', 'Multi-job tracking', 'Ad-free experience', 'Cloud backup', 'AI insights', 'Priority support'],
   },
   {
     id: 'pro' as const,
@@ -44,8 +47,8 @@ const plans = [
     icon: Zap,
     color: '#0A84FF',
     popular: true,
-    features: ['Unlimited tip logging', 'Unlimited history', 'Full weekly & monthly charts', 'Tax export (PDF & CSV)', 'Smart insights & trends', 'Goal tracking', 'Multi-job tracking', 'Cloud backup'],
-    missing: ['Ad-free experience', 'AI insights', 'Priority support'],
+    features: ['Unlimited tip logging', 'Unlimited history', 'Full weekly & monthly charts', 'Tax export (PDF & CSV)', 'Smart insights & trends', 'Goal tracking', 'Multi-job tracking'],
+    missing: ['Ad-free experience', 'Cloud backup', 'AI insights', 'Priority support'],
   },
   {
     id: 'premium' as const,
@@ -54,7 +57,7 @@ const plans = [
     period: { monthly: '/month', annual: '/year' },
     icon: Crown,
     color: '#FFD60A',
-    features: ['Everything in Pro', 'Ad-free experience', 'AI-powered insights', 'Advanced analytics', 'Priority support', 'Data export & backup'],
+    features: ['Everything in Pro', 'Ad-free experience', 'Cloud backup', 'AI-powered insights', 'Advanced analytics', 'Priority support', 'Data export & backup'],
     missing: [],
   },
 ];
@@ -66,17 +69,48 @@ const priceIdMap = {
 
 function PricingPage() {
   const { user } = useAuth();
-  const { plan: currentPlan } = useSubscription();
+  const { plan: currentPlan, subscription } = useSubscription();
   const { plan: searchPlan, checkout } = Route.useSearch();
   const [selected, setSelected] = useState<'free' | 'pro' | 'premium'>(searchPlan || 'pro');
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
+  const [actionLoading, setActionLoading] = useState(false);
+
+  const isActive = subscription?.status === 'active' || subscription?.status === 'trialing';
 
   const handleSubscribe = async () => {
-    if (selected === 'free' || selected === currentPlan) return;
+    if (selected === currentPlan) return;
+    if (actionLoading || checkoutLoading) return;
+
+    // Downgrade to free = open customer portal to cancel
+    if (selected === 'free') {
+      await openCustomerPortal();
+      return;
+    }
 
     const priceId = priceIdMap[selected][billing];
 
+    // If user already has an active subscription, update it instead of opening new checkout
+    if (isActive && currentPlan !== 'free') {
+      setActionLoading(true);
+      try {
+        const env = getPaddleEnvironment();
+        const { data, error } = await supabase.functions.invoke('update-subscription', {
+          body: { priceId, environment: env },
+        });
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        toast.success('Plan updated!', { description: `You're now on the ${selected === 'premium' ? 'Premium' : 'Pro'} plan.` });
+      } catch (err: any) {
+        console.error('Update error:', err);
+        toast.error('Failed to update plan', { description: err.message });
+      } finally {
+        setActionLoading(false);
+      }
+      return;
+    }
+
+    // New subscription — open checkout
     await openCheckout({
       priceId,
       customerEmail: user?.email || undefined,
@@ -85,7 +119,39 @@ function PricingPage() {
     });
   };
 
+  const openCustomerPortal = async () => {
+    setActionLoading(true);
+    try {
+      const env = getPaddleEnvironment();
+      const { data, error } = await supabase.functions.invoke('customer-portal', {
+        body: { environment: env },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (err: any) {
+      console.error('Portal error:', err);
+      toast.error('Could not open subscription management');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const isSuccess = checkout === 'success';
+  const loading = checkoutLoading || actionLoading;
+
+  const getButtonText = () => {
+    if (currentPlan === selected) return 'Current Plan';
+    if (selected === 'free') return 'Manage Subscription';
+    if (isActive && currentPlan !== 'free') {
+      // Plan change
+      const tiers = { free: 0, pro: 1, premium: 2 };
+      return tiers[selected] > tiers[currentPlan] ? `Upgrade to ${selected === 'premium' ? 'Premium' : 'Pro'}` : `Switch to ${selected === 'premium' ? 'Premium' : 'Pro'}`;
+    }
+    return selected === 'pro' ? 'Start 7-Day Free Trial' : 'Subscribe to Premium';
+  };
 
   return (
     <div className="min-h-screen max-w-[430px] mx-auto pb-32">
@@ -200,7 +266,7 @@ function PricingPage() {
         {/* CTA */}
         <button
           onClick={handleSubscribe}
-          disabled={checkoutLoading || selected === currentPlan}
+          disabled={loading || selected === currentPlan}
           className="w-full h-[54px] rounded-2xl text-[17px] font-bold text-foreground animate-fade-in-up stagger-3 disabled:opacity-50 flex items-center justify-center gap-2"
           style={{
             background: selected === 'premium' ? 'linear-gradient(135deg, #FFD60A, #FF9F0A)' : '#0A84FF',
@@ -208,13 +274,25 @@ function PricingPage() {
             boxShadow: selected === 'premium' ? '0 0 24px rgba(255,214,10,0.50)' : '0 0 24px rgba(10,132,255,0.50)',
           }}
         >
-          {checkoutLoading && <Loader2 className="w-5 h-5 animate-spin" />}
-          {currentPlan === selected ? 'Current Plan' : selected === 'free' ? 'Downgrade to Free' : selected === 'pro' ? 'Start 7-Day Free Trial' : 'Subscribe to Premium'}
+          {loading && <Loader2 className="w-5 h-5 animate-spin" />}
+          {getButtonText()}
         </button>
 
         <p className="text-center text-[11px] text-muted-foreground mt-3">
           {selected === 'premium' ? 'Cancel anytime. Billed immediately.' : selected === 'pro' ? '7-day free trial. Cancel anytime.' : ''}
         </p>
+
+        {/* Manage subscription link for active subscribers */}
+        {isActive && currentPlan !== 'free' && (
+          <button
+            onClick={openCustomerPortal}
+            disabled={actionLoading}
+            className="w-full text-center mt-4 text-[14px] font-medium"
+            style={{ color: '#0A84FF' }}
+          >
+            Manage Subscription & Billing →
+          </button>
+        )}
       </div>
 
       <TabBar />
