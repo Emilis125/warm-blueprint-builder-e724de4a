@@ -13,7 +13,7 @@ import { useSettings } from '@/hooks/use-settings';
 import { useTips } from '@/hooks/use-tips';
 import { useAuth } from '@/hooks/use-auth';
 import { supabase } from '@/integrations/supabase/client';
-import { getPaddleEnvironment } from '@/lib/paddle';
+
 import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Database, Download, CheckCircle, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -77,9 +77,8 @@ function ProfilePage() {
   const handleManageSubscription = async () => {
     setPortalLoading(true);
     try {
-      const env = getPaddleEnvironment();
       const { data, error } = await supabase.functions.invoke('customer-portal', {
-        body: { environment: env },
+        body: {},
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);

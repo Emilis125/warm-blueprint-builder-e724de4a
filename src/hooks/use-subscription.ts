@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/use-auth';
-import { getPaddleEnvironment } from '@/lib/paddle';
 
 interface Subscription {
   product_id: string;
@@ -24,14 +23,12 @@ export function useSubscription() {
       return;
     }
 
-    const env = getPaddleEnvironment();
-
     const fetchSubscription = async () => {
       const { data } = await supabase
         .from('subscriptions')
         .select('product_id, price_id, status, current_period_end, cancel_at_period_end')
         .eq('user_id', user.id)
-        .eq('environment', env)
+        .eq('environment', 'live')
         .maybeSingle();
 
       setSubscription(data);

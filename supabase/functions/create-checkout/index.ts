@@ -37,44 +37,51 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
     }
 
-    const { priceId } = await req.json();
+    const { priceId, successUrl, cancelUrl } = await req.json();
     const priceConfig = PRICE_MAP[priceId];
     if (!priceConfig) {
       return new Response(JSON.stringify({ error: 'Invalid price ID' }), { status: 400, headers: corsHeaders });
     }
 
-    const { data: sub } = await supabase
-      .from('subscriptions')
-      .select('paddle_subscription_id')
-      .eq('user_id', user.id)
-      .eq('environment', 'live')
-      .maybeSingle();
+    const stripe = getStripe();
 
-    if (!sub) {
-      return new Response(JSON.stringify({ error: 'No subscription found' }), { status: 404, headers: corsHeaders });
+    // Find or create Stripe customer
+    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    let customerId: string;
+    if (customers.data.length > 0) {
+      customerId = customers.data[0].id;
+    } else {
+      const customer = await stripe.customers.create({
+        email: user.email!,
+        metadata: { userId: user.id },
+      });
+      customerId = customer.id;
     }
 
-    const stripe = getStripe();
-    const subscription = await stripe.subscriptions.retrieve(sub.paddle_subscription_id);
-    const itemId = subscription.items.data[0].id;
-
-    // Create a new price for the plan change
-    const newPrice = await stripe.prices.create({
-      currency: 'usd',
-      unit_amount: priceConfig.amount,
-      recurring: { interval: priceConfig.interval },
-      product_data: { name: priceConfig.name },
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      mode: 'subscription',
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          unit_amount: priceConfig.amount,
+          recurring: { interval: priceConfig.interval },
+          product_data: { name: priceConfig.name },
+        },
+        quantity: 1,
+      }],
+      subscription_data: {
+        trial_period_days: priceConfig.product === 'pro_plan' ? 7 : undefined,
+        metadata: { userId: user.id, productId: priceConfig.product, priceId },
+      },
+      success_url: successUrl || 'https://warm-blueprint-builder.lovable.app/pricing?checkout=success',
+      cancel_url: cancelUrl || 'https://warm-blueprint-builder.lovable.app/pricing',
+      metadata: { userId: user.id },
     });
 
-    const updated = await stripe.subscriptions.update(sub.paddle_subscription_id, {
-      items: [{ id: itemId, price: newPrice.id }],
-      proration_behavior: 'create_prorations',
-      metadata: { productId: priceConfig.product, priceId },
-    });
-
-    return new Response(JSON.stringify({ success: true, status: updated.status }), { headers: corsHeaders });
+    return new Response(JSON.stringify({ url: session.url }), { headers: corsHeaders });
   } catch (e: any) {
-    console.error('Update subscription error:', e);
+    console.error('Checkout error:', e);
     return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: corsHeaders });
   }
 });
