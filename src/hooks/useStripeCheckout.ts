@@ -25,8 +25,10 @@ export function useStripeCheckout() {
       if (data?.url) {
         window.location.href = data.url;
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Checkout error:", err);
+      const { toast } = await import("sonner");
+      toast.error("Something went wrong", { description: err?.message || "Please try again." });
     } finally {
       setLoading(false);
     }
