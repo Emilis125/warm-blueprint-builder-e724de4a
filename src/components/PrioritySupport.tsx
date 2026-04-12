@@ -60,18 +60,6 @@ export function PrioritySupport({ isPremium }: PrioritySupportProps) {
           <ExternalLink className="w-4 h-4 text-muted-foreground" />
         </button>
 
-        <button
-          onClick={() => toast.success('Live chat opening...', { description: 'A support agent will be with you shortly.' })}
-          className="w-full flex items-center gap-3 p-3 rounded-xl transition-all active:scale-[0.98]"
-          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' }}
-        >
-          <MessageCircle className="w-5 h-5" style={{ color: '#30D158' }} />
-          <div className="flex-1 text-left">
-            <p className="text-[14px] font-medium text-foreground">Live Chat</p>
-            <p className="text-[11px] text-muted-foreground">Available 9am–9pm EST</p>
-          </div>
-          <ExternalLink className="w-4 h-4 text-muted-foreground" />
-        </button>
       </div>
     </GlassCard>
   );
