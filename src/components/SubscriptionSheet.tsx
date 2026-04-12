@@ -42,7 +42,7 @@ const plans = [
 ];
 
 export function SubscriptionSheet({ open, onClose }: SubscriptionSheetProps) {
-  const { plan: currentPlan, setPlan } = useSubscription();
+  const { plan: currentPlan } = useSubscription();
   const [selected, setSelected] = useState<'free' | 'pro' | 'premium'>('pro');
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
 
