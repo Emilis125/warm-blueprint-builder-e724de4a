@@ -286,7 +286,7 @@ function PricingPage() {
         </button>
 
         <p className="text-center text-[11px] text-muted-foreground mt-3">
-          {selected === 'premium' ? 'Cancel anytime. Billed immediately.' : selected === 'pro' ? '7-day free trial. Cancel anytime.' : ''}
+          {selected === 'premium' ? 'Cancel anytime. Billed immediately.' : selected === 'pro' ? 'Cancel anytime.' : ''}
         </p>
 
         {/* Manage subscription link for active subscribers */}
