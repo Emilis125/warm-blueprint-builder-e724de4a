@@ -99,6 +99,7 @@ function ProfilePage() {
     { icon: Briefcase, label: 'Workplace', sub: isPro ? `${workplaces.length} workplace${workplaces.length > 1 ? 's' : ''}` : 'Main Job', onClick: isPro ? () => setWpOpen(true) : undefined, premium: !isPro },
     
     { icon: CreditCard, label: 'Subscription', sub: planLabels[plan], onClick: () => navigate({ to: '/pricing' }), badge: plan !== 'free' },
+    ...(isActive && plan !== 'free' ? [{ icon: Settings, label: 'Manage Subscription', sub: portalLoading ? 'Opening…' : 'Billing, cancel, invoices', onClick: handleManageSubscription }] : []),
     { icon: Calendar, label: 'Tax Year', sub: String(new Date().getFullYear()), onClick: undefined },
     { icon: Download, label: 'Data Export & Backup', sub: isPremium ? (backupDone ? 'Downloaded ✓' : 'Download all data as JSON') : 'Premium feature', onClick: isPremium ? handleBackup : undefined, premium: !isPremium },
     { icon: Database, label: 'Cloud Backup', sub: isPremium ? 'Synced — switch phones anytime' : 'Premium feature', onClick: isPremium ? handleCloudBackup : undefined, premium: !isPremium },
