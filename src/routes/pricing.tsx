@@ -4,8 +4,14 @@ import { RequireAuth } from '@/components/RequireAuth';
 import { TabBar } from '@/components/TabBar';
 import { useSubscription } from '@/hooks/use-subscription';
 import { Check, X, Crown, Zap, Star, ChevronLeft } from 'lucide-react';
+import { z } from 'zod';
+
+const pricingSearchSchema = z.object({
+  plan: z.enum(['free', 'pro', 'premium']).optional(),
+});
 
 export const Route = createFileRoute('/pricing')({
+  validateSearch: pricingSearchSchema,
   component: () => <RequireAuth><PricingPage /></RequireAuth>,
   head: () => ({
     meta: [
@@ -52,7 +58,8 @@ const plans = [
 function PricingPage() {
   const navigate = useNavigate();
   const { plan: currentPlan, setPlan } = useSubscription();
-  const [selected, setSelected] = useState<'free' | 'pro' | 'premium'>('pro');
+  const { plan: searchPlan } = Route.useSearch();
+  const [selected, setSelected] = useState<'free' | 'pro' | 'premium'>(searchPlan || 'pro');
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
 
   return (
