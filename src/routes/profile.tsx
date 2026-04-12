@@ -13,7 +13,8 @@ import { useSettings } from '@/hooks/use-settings';
 import { useTips } from '@/hooks/use-tips';
 import { useAuth } from '@/hooks/use-auth';
 import { supabase } from '@/integrations/supabase/client';
-import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Database, Download, CheckCircle } from 'lucide-react';
+import { getPaddleEnvironment } from '@/lib/paddle';
+import { Bell, Briefcase, CreditCard, Calendar, LogOut, ChevronRight, Crown, Lock, Database, Download, CheckCircle, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/profile')({
