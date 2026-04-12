@@ -179,6 +179,7 @@ function ReportsPage() {
           <UpgradePaywall
             feature="Shift Performance"
             description="See which shifts earn you the most. Premium only."
+            tier="premium"
           />
         </div>
       ) : null}
