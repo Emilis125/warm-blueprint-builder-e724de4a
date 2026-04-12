@@ -108,6 +108,27 @@ function ProfilePage() {
         </span>
       </div>
 
+      {/* Upgrade CTA for free users */}
+      {plan === 'free' && (
+        <button
+          onClick={() => setSubOpen(true)}
+          className="w-full rounded-2xl p-4 mb-5 flex items-center gap-4 animate-fade-in-up stagger-2"
+          style={{
+            background: 'linear-gradient(135deg, rgba(10,132,255,0.15), rgba(94,92,230,0.15))',
+            border: '1px solid rgba(10,132,255,0.25)',
+          }}
+        >
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(10,132,255,0.20)' }}>
+            <Crown className="w-5 h-5" style={{ color: '#0A84FF' }} />
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-[15px] font-semibold text-foreground">Upgrade to Pro</p>
+            <p className="text-[13px] text-muted-foreground">Unlock unlimited features</p>
+          </div>
+          <ChevronRight className="w-4 h-4" style={{ color: '#0A84FF' }} />
+        </button>
+      )}
+
       {/* Free plan usage */}
       {!isPro && (
         <GlassCard className="mb-5 animate-fade-in-up stagger-2">
