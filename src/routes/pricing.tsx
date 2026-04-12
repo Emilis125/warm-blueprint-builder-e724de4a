@@ -59,7 +59,7 @@ function PricingPage() {
     <div className="min-h-screen max-w-[430px] mx-auto px-4 pt-12 pb-32">
       {/* Header */}
       <div className="flex items-center gap-3 mb-5 animate-fade-in-up">
-        <button onClick={() => navigate({ to: '/' })} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.12)' }}>
+        <button onClick={() => window.history.back()} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.12)' }}>
           <ChevronLeft className="w-4 h-4 text-foreground" />
         </button>
         <div>
@@ -156,7 +156,7 @@ function PricingPage() {
 
       {/* CTA */}
       <button
-        onClick={() => { setPlan(selected); navigate({ to: '/' }); }}
+        onClick={() => { setPlan(selected); window.history.back(); }}
         className="w-full h-[54px] rounded-2xl text-[17px] font-bold text-foreground animate-fade-in-up stagger-3"
         style={{
           background: selected === 'premium' ? 'linear-gradient(135deg, #FFD60A, #FF9F0A)' : '#0A84FF',
