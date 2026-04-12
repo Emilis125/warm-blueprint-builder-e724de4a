@@ -31,9 +31,14 @@ export function GoalTracker({ weekTotal, monthTotal, isPro, weeklyGoal, monthlyG
               <Target className="w-4 h-4" style={{ color: '#0A84FF' }} />
               Goal Tracking
             </h3>
-            <span className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold" style={{ background: 'rgba(10,132,255,0.15)', color: '#0A84FF' }}>
-              <Crown className="w-3 h-3" /> PRO
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold" style={{ background: 'rgba(10,132,255,0.15)', color: '#0A84FF' }}>
+                <Crown className="w-3 h-3" /> PRO
+              </span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: 'rgba(48,209,88,0.25)', color: '#30D158' }}>
+                7 DAYS FREE
+              </span>
+            </div>
           </div>
           <p className="text-[13px] text-muted-foreground">Set weekly and monthly income goals to track your progress. Upgrade to Pro to unlock.</p>
         </GlassCard>
