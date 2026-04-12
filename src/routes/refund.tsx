@@ -34,18 +34,12 @@ function RefundPage() {
         <section>
           <h2 className="text-[16px] font-semibold text-foreground mb-2">How to Request a Refund</h2>
           <p>
-            Refunds are processed by our payment provider, <strong>Paddle</strong>. To request a refund:
+            Refunds are processed through <strong>Stripe</strong>. To request a refund:
           </p>
           <ol className="list-decimal ml-5 mt-2 space-y-2">
-            <li>
-              Visit{' '}
-              <a href="https://paddle.net" target="_blank" rel="noopener noreferrer" style={{ color: '#0A84FF' }}>
-                paddle.net
-              </a>{' '}
-              and locate your transaction
-            </li>
-            <li>Follow the instructions to submit a refund request</li>
-            <li>Alternatively, contact our support team through the in-app support feature and we will process the refund on your behalf</li>
+            <li>Contact our support team through the in-app support feature</li>
+            <li>Provide your account email and the date of the charge</li>
+            <li>We will process the refund within 5-10 business days</li>
           </ol>
         </section>
 
