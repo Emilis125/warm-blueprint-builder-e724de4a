@@ -238,7 +238,7 @@ function PricingPage() {
                     <div className="flex items-baseline gap-0.5">
                       <span className="text-[22px] font-bold text-foreground">{p.price[billing]}</span>
                       <span className="text-[13px] text-muted-foreground">{p.period[billing]}</span>
-                      {p.id === 'pro' && (
+                      {p.id === 'pro' && billing === 'monthly' && (
                         <span className="ml-2 text-[11px] font-semibold" style={{ color: '#30D158' }}>7 days free</span>
                       )}
                       {billing === 'annual' && p.id === 'pro' && (
