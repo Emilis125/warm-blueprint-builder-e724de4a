@@ -4,11 +4,9 @@ import { RequireAuth } from '@/components/RequireAuth';
 import { TabBar } from '@/components/TabBar';
 import { useSubscription } from '@/hooks/use-subscription';
 import { useAuth } from '@/hooks/use-auth';
-import { usePaddleCheckout } from '@/hooks/usePaddleCheckout';
-import { PaymentTestModeBanner } from '@/components/PaymentTestModeBanner';
+import { useStripeCheckout } from '@/hooks/useStripeCheckout';
 import { Check, X, Crown, Zap, Star, ChevronLeft, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { getPaddleEnvironment } from '@/lib/paddle';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -73,7 +71,7 @@ function PricingPage() {
   const { plan: searchPlan, checkout } = Route.useSearch();
   const [selected, setSelected] = useState<'free' | 'pro' | 'premium'>(searchPlan || 'pro');
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
-  const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
+  const { openCheckout, loading: checkoutLoading } = useStripeCheckout();
   const [actionLoading, setActionLoading] = useState(false);
 
   const isActive = subscription?.status === 'active' || subscription?.status === 'trialing';
@@ -90,13 +88,12 @@ function PricingPage() {
 
     const priceId = priceIdMap[selected][billing];
 
-    // If user already has an active subscription, update it instead of opening new checkout
+    // If user already has an active subscription, update it
     if (isActive && currentPlan !== 'free') {
       setActionLoading(true);
       try {
-        const env = getPaddleEnvironment();
         const { data, error } = await supabase.functions.invoke('update-subscription', {
-          body: { priceId, environment: env },
+          body: { priceId },
         });
         if (error) throw error;
         if (data?.error) throw new Error(data.error);
@@ -110,21 +107,19 @@ function PricingPage() {
       return;
     }
 
-    // New subscription — open checkout
+    // New subscription — open Stripe checkout
     await openCheckout({
       priceId,
-      customerEmail: user?.email || undefined,
-      customData: { userId: user?.id || '' },
       successUrl: `${window.location.origin}/pricing?checkout=success`,
+      cancelUrl: `${window.location.origin}/pricing`,
     });
   };
 
   const openCustomerPortal = async () => {
     setActionLoading(true);
     try {
-      const env = getPaddleEnvironment();
       const { data, error } = await supabase.functions.invoke('customer-portal', {
-        body: { environment: env },
+        body: {},
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
@@ -146,7 +141,6 @@ function PricingPage() {
     if (currentPlan === selected) return 'Current Plan';
     if (selected === 'free') return 'Manage Subscription';
     if (isActive && currentPlan !== 'free') {
-      // Plan change
       const tiers = { free: 0, pro: 1, premium: 2 };
       return tiers[selected] > tiers[currentPlan] ? `Upgrade to ${selected === 'premium' ? 'Premium' : 'Pro'}` : `Switch to ${selected === 'premium' ? 'Premium' : 'Pro'}`;
     }
@@ -155,8 +149,6 @@ function PricingPage() {
 
   return (
     <div className="min-h-screen max-w-[430px] mx-auto pb-32">
-      <PaymentTestModeBanner />
-
       <div className="px-4 pt-12">
         {/* Header */}
         <div className="flex items-center gap-3 mb-5 animate-fade-in-up">
