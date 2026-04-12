@@ -124,30 +124,8 @@ export async function verifyWebhook(
     throw new Error("Missing signature, body, or webhook secret");
   }
 
-  // Import Stripe just for webhook verification
   const Stripe = (await import("npm:stripe@17")).default;
   const stripe = new Stripe("not-used");
-  const event = stripe.webhooks.constructEvent(body, signature, secret);
-  return { event, body };
-}
-
-export async function verifyWebhook(
-  req: Request,
-  env: StripeEnv
-): Promise<{ event: Stripe.Event; body: string }> {
-  const signature = req.headers.get("stripe-signature");
-  const body = await req.text();
-
-  const secret =
-    env === "live"
-      ? Deno.env.get("PAYMENTS_LIVE_WEBHOOK_SECRET")
-      : Deno.env.get("PAYMENTS_SANDBOX_WEBHOOK_SECRET");
-
-  if (!signature || !body || !secret) {
-    throw new Error("Missing signature, body, or webhook secret");
-  }
-
-  const stripe = createStripeClient(env);
   const event = stripe.webhooks.constructEvent(body, signature, secret);
   return { event, body };
 }
