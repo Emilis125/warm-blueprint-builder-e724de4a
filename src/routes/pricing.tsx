@@ -217,14 +217,14 @@ function PricingPage() {
                     <p.icon className="w-5 h-5" style={{ color: p.color }} />
                   </div>
                   <div className="flex-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-[17px] font-semibold text-foreground">{p.name}</span>
                       {p.popular && (
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: '#0A84FF', color: 'white' }}>
                           POPULAR
                         </span>
                       )}
-                      {p.id === 'pro' && (
+                      {p.id === 'pro' && !isCurrent && (
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: 'rgba(48,209,88,0.25)', color: '#30D158' }}>
                           7 DAYS FREE
                         </span>
