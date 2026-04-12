@@ -293,6 +293,14 @@ function PricingPage() {
             Manage Subscription & Billing →
           </button>
         )}
+
+        <div className="flex items-center justify-center gap-4 mt-6 mb-2">
+          <Link to="/terms" className="text-[12px] text-muted-foreground hover:text-foreground">Terms</Link>
+          <span className="text-[12px] text-muted-foreground">·</span>
+          <Link to="/privacy" className="text-[12px] text-muted-foreground hover:text-foreground">Privacy</Link>
+          <span className="text-[12px] text-muted-foreground">·</span>
+          <Link to="/refund" className="text-[12px] text-muted-foreground hover:text-foreground">Refund Policy</Link>
+        </div>
       </div>
 
       <TabBar />
