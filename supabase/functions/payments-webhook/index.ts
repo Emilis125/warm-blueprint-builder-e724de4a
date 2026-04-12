@@ -54,8 +54,8 @@ async function handleSubscriptionUpsert(sub: Stripe.Subscription) {
 
   await supabase.from('subscriptions').upsert({
     user_id: userId,
-    paddle_subscription_id: sub.id, // reusing column for Stripe sub ID
-    paddle_customer_id: sub.customer as string, // reusing column for Stripe customer ID
+    stripe_subscription_id: sub.id,
+    stripe_customer_id: sub.customer as string,
     product_id: productId,
     price_id: priceId,
     status: sub.status,
@@ -75,5 +75,5 @@ async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
       status: 'canceled',
       updated_at: new Date().toISOString(),
     })
-    .eq('paddle_subscription_id', sub.id);
+    .eq('stripe_subscription_id', sub.id);
 }

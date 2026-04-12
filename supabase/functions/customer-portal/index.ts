@@ -33,18 +33,18 @@ Deno.serve(async (req) => {
     // Look up subscription to get Stripe customer ID
     const { data: sub } = await supabase
       .from('subscriptions')
-      .select('paddle_customer_id')
+      .select('stripe_customer_id')
       .eq('user_id', user.id)
       .eq('environment', 'live')
       .maybeSingle();
 
-    if (!sub?.paddle_customer_id) {
+    if (!sub?.stripe_customer_id) {
       return new Response(JSON.stringify({ error: 'No subscription found' }), { status: 404, headers: corsHeaders });
     }
 
     const stripe = getStripe();
     const session = await stripe.billingPortal.sessions.create({
-      customer: sub.paddle_customer_id,
+      customer: sub.stripe_customer_id,
       return_url: 'https://warm-blueprint-builder.lovable.app/pricing',
     });
 
