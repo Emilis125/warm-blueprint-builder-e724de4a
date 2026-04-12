@@ -18,13 +18,20 @@ export function StripeEmbeddedCheckout({
   returnUrl,
 }: StripeEmbeddedCheckoutProps) {
   const fetchClientSecret = async (): Promise<string> => {
-    const { data, error } = await supabase.functions.invoke("create-checkout", {
-      body: { priceId, quantity, customerEmail, userId, returnUrl, environment: getStripeEnvironment() },
-    });
-    if (error || !data?.clientSecret) {
-      throw new Error(error?.message || "Failed to create checkout session");
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { priceId, quantity, customerEmail, userId, returnUrl, environment: getStripeEnvironment() },
+      });
+      if (error || !data?.clientSecret) {
+        const msg = error?.message || data?.error || "Failed to create checkout session";
+        console.error("Checkout error:", msg);
+        throw new Error(msg);
+      }
+      return data.clientSecret;
+    } catch (err) {
+      console.error("Checkout fetchClientSecret error:", err);
+      throw err;
     }
-    return data.clientSecret;
   };
 
   return (
