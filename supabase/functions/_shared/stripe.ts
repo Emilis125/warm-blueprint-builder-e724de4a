@@ -20,25 +20,16 @@ export function createStripeClient(env: StripeEnv): Stripe {
     throw new Error(`Missing Stripe API key for environment: ${env}`);
   }
 
-  // Create a fetch-based HTTP client that rewrites the host to the gateway
-  const gatewayFetch: typeof fetch = (input, init) => {
-    let url: string;
-    if (typeof input === "string") {
-      url = input.replace("https://api.stripe.com", GATEWAY_BASE);
-    } else if (input instanceof URL) {
-      url = input.toString().replace("https://api.stripe.com", GATEWAY_BASE);
-    } else {
-      url = (input as Request).url.replace("https://api.stripe.com", GATEWAY_BASE);
-      input = new Request(url, input as Request);
-      return fetch(input, init);
-    }
-    return fetch(url, init);
-  };
-
-  return new Stripe(key, {
-    httpClient: Stripe.createFetchHttpClient(gatewayFetch),
+  // Route through gateway by overriding the Stripe host
+  const client = new Stripe(key, {
     apiVersion: "2025-04-30.basil",
   });
+
+  // Override the base path to route through the Lovable gateway
+  // @ts-ignore — internal Stripe SDK override
+  client._api = { ...(client as any)._api, host: "stripe-gateway.lovable.dev", protocol: "https" };
+
+  return client;
 }
 
 export async function verifyWebhook(
