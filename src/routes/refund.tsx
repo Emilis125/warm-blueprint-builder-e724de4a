@@ -50,12 +50,6 @@ function RefundPage() {
           </p>
         </section>
 
-        <section>
-          <h2 className="text-[16px] font-semibold text-foreground mb-2">After 30 Days</h2>
-          <p>
-            Refund requests made after the 30-day window will be reviewed on a case-by-case basis. We aim to be fair and reasonable in all cases.
-          </p>
-        </section>
 
         <section>
           <h2 className="text-[16px] font-semibold text-foreground mb-2">Cancellation</h2>
