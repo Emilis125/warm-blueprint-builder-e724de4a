@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
 import { RequireAuth } from '@/components/RequireAuth';
 import { useState } from 'react';
 import { GlassCard } from '@/components/GlassCard';
@@ -201,6 +201,15 @@ function ProfilePage() {
         <PrioritySupport isPremium={isPremium} />
       </div>
 
+
+      {/* Legal links */}
+      <div className="flex items-center justify-center gap-4 mb-5 animate-fade-in-up stagger-3">
+        <Link to="/terms" className="text-[12px] text-muted-foreground hover:text-foreground">Terms</Link>
+        <span className="text-[12px] text-muted-foreground">·</span>
+        <Link to="/privacy" className="text-[12px] text-muted-foreground hover:text-foreground">Privacy</Link>
+        <span className="text-[12px] text-muted-foreground">·</span>
+        <Link to="/refund" className="text-[12px] text-muted-foreground hover:text-foreground">Refund Policy</Link>
+      </div>
 
       {/* Sign Out */}
       <GlassCard className="!p-0 animate-fade-in-up stagger-3">
