@@ -5,9 +5,8 @@ const config: CapacitorConfig = {
   appName: 'TipTracker Pro',
   webDir: 'dist/client',
   server: {
-    // For development, you can point to your live URL:
-    // url: 'https://warm-blueprint-builder.lovable.app',
-    // cleartext: true,
+    url: 'https://warm-blueprint-builder.lovable.app',
+    cleartext: true,
     androidScheme: 'https',
   },
   plugins: {
