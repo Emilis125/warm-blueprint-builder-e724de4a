@@ -34,7 +34,7 @@ export function UpgradePaywall({ feature, description, tier = 'pro' }: UpgradePa
           }}
         >
           <Crown className="w-4 h-4" />
-          Upgrade to Pro
+          Upgrade to {tier === 'premium' ? 'Premium' : 'Pro'}
         </button>
       </div>
       <SubscriptionSheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
