@@ -98,9 +98,6 @@ function LoginPage() {
           Continue with Google
         </button>
 
-        {/* Apple Sign In */}
-        <button
-          onClick={handleAppleAuth}
         {/* Divider */}
         <div className="flex items-center gap-4 mb-4">
           <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.12)' }} />
