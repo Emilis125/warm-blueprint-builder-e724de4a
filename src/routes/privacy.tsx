@@ -112,7 +112,8 @@ function PrivacyPage() {
         <section>
           <h2 className="text-[16px] font-semibold text-foreground mb-2">10. Contact</h2>
           <p>
-            If you have any questions about this Privacy Policy or your personal data, please contact EJGroup through the in-app support feature.
+            If you have any questions about this Privacy Policy or your personal data, please contact EJGroup through the in-app support feature or email us at{' '}
+            <a href="mailto:ejgroup0@gmail.com" style={{ color: '#0A84FF' }}>ejgroup0@gmail.com</a>.
           </p>
         </section>
       </div>
