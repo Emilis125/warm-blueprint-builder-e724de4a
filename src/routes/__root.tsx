@@ -2,7 +2,8 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/hooks/use-auth";
 import { Toaster } from "sonner";
-
+import { useEffect } from "react";
+import { StatusBar } from "@capacitor/status-bar";
 import appCss from "../styles.css?url";
 
 const queryClient = new QueryClient();
@@ -12,9 +13,7 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">
-          Page not found
-        </h2>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
         </p>
@@ -37,7 +36,10 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "TipTracker Pro" },
-      { name: "description", content: "Log tips in seconds. Stay tax-ready all year. Built for hospitality and gig workers." },
+      {
+        name: "description",
+        content: "Log tips in seconds. Stay tax-ready all year. Built for hospitality and gig workers.",
+      },
       { name: "author", content: "TipTracker Pro" },
       { name: "theme-color", content: "#0A84FF" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
@@ -45,14 +47,28 @@ export const Route = createRootRoute({
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "TipTracker" },
       { property: "og:title", content: "TipTracker Pro" },
-      { property: "og:description", content: "Log tips in seconds. Stay tax-ready all year. Built for hospitality and gig workers." },
+      {
+        property: "og:description",
+        content: "Log tips in seconds. Stay tax-ready all year. Built for hospitality and gig workers.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "TipTracker Pro" },
-      { name: "twitter:description", content: "Log tips in seconds. Stay tax-ready all year. Built for hospitality and gig workers." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/90abbb6b-64c0-4766-a5b2-97fb96ee7cb5" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/90abbb6b-64c0-4766-a5b2-97fb96ee7cb5" },
+      {
+        name: "twitter:description",
+        content: "Log tips in seconds. Stay tax-ready all year. Built for hospitality and gig workers.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/90abbb6b-64c0-4766-a5b2-97fb96ee7cb5",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/90abbb6b-64c0-4766-a5b2-97fb96ee7cb5",
+      },
     ],
     links: [
       {
@@ -85,22 +101,44 @@ function RootShell({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body style={{ background: 'linear-gradient(160deg, #0D1B3E 0%, #1A1040 50%, #0D2818 100%)', backgroundAttachment: 'fixed', minHeight: '100vh' }}>
+      <body
+        style={{
+          background: "linear-gradient(160deg, #0D1B3E 0%, #1A1040 50%, #0D2818 100%)",
+          backgroundAttachment: "fixed",
+          minHeight: "100vh",
+        }}
+      >
         {children}
         <Scripts />
-        <script dangerouslySetInnerHTML={{ __html: `
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
           if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
               navigator.serviceWorker.register('/sw.js');
             });
           }
-        `}} />
+        `,
+          }}
+        />
       </body>
     </html>
   );
 }
 
 function RootComponent() {
+  useEffect(() => {
+    const hideStatusBar = async () => {
+      try {
+        await StatusBar.hide();
+      } catch (error) {
+        console.log("StatusBar API not available");
+      }
+    };
+
+    hideStatusBar();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
