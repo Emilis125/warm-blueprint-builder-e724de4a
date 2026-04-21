@@ -108,7 +108,7 @@ function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen max-w-[430px] mx-auto px-4 pt-12 pb-32">
+    <div className="app-screen min-h-screen max-w-[430px] mx-auto px-4 pb-32">
       <h1 className="text-[34px] font-bold text-foreground mb-8 animate-fade-in-up">Profile</h1>
 
       {/* Avatar */}

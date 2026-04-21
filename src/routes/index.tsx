@@ -34,7 +34,7 @@ function Dashboard() {
   const cardPercent = todayTotal > 0 ? Math.round((todayCard / todayTotal) * 100) : 0;
 
   return (
-    <div className="min-h-screen max-w-[430px] mx-auto px-4 pt-12 pb-32">
+    <div className="app-screen min-h-screen max-w-[430px] mx-auto px-4 pb-32">
       {/* Header */}
       <div className="mb-5 animate-fade-in-up">
         <h1 className="text-[34px] font-bold text-foreground">Today</h1>
