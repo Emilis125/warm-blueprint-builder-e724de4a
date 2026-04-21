@@ -37,7 +37,7 @@ function ReportsPage() {
   const periods = ['week', 'month', 'year'] as const;
 
   return (
-    <div className="min-h-screen max-w-[430px] mx-auto px-4 pt-12 pb-32">
+    <div className="app-screen min-h-screen max-w-[430px] mx-auto px-4 pb-32">
       <h1 className="text-[34px] font-bold text-foreground mb-5 animate-fade-in-up">Reports</h1>
 
       {/* Period selector */}

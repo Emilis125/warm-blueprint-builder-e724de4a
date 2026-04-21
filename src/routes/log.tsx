@@ -63,7 +63,7 @@ function LogPage() {
 
   return (
     <>
-      <div className="min-h-screen max-w-[430px] mx-auto px-4 pt-12 pb-32">
+      <div className="app-screen min-h-screen max-w-[430px] mx-auto px-4 pb-32">
         <div className="text-center mb-2">
           <h1 className="text-[17px] font-semibold text-foreground">Log Tips</h1>
           <p className="text-[13px] text-muted-foreground">{today}</p>
