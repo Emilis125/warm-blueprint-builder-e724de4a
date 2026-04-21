@@ -115,7 +115,7 @@
   }
 
   :root {
-    --app-safe-top: max(env(safe-area-inset-top), 0px);
+    --app-safe-top: 0px;
   }
 
   body {
@@ -244,5 +244,5 @@
 .stagger-4 { animation-delay: 320ms; }
 
 .app-screen {
-  padding-top: calc(var(--app-safe-top) + 0.75rem);
+  padding-top: 0.75rem;
 }
