@@ -55,6 +55,19 @@ function LoginPage() {
   };
 
   const handleGoogleAuth = async () => {
+    const inMedian =
+      typeof navigator !== 'undefined' &&
+      navigator.userAgent.toLowerCase().indexOf('median') >= 0;
+
+    if (inMedian) {
+      try {
+        (window as any).median?.socialLogin?.google?.login();
+      } catch {
+        toast.error('Google sign-in failed');
+      }
+      return;
+    }
+
     try {
       const result = await lovable.auth.signInWithOAuth('google', {
         redirect_uri: window.location.origin,
