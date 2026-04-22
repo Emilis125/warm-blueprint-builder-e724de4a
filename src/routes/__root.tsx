@@ -4,6 +4,7 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { Toaster } from "sonner";
 import { useEffect } from "react";
 import { StatusBar } from "@capacitor/status-bar";
+import { supabase } from "@/integrations/supabase/client";
 import appCss from "../styles.css?url";
 
 const queryClient = new QueryClient();
@@ -137,6 +138,31 @@ function RootComponent() {
     };
 
     hideStatusBar();
+
+    // Median native Google Sign-In callback
+    (window as any).median_social_login_callback = async (data: {
+      status: string;
+      platform: string;
+      email?: string;
+      idToken?: string;
+      error?: string;
+    }) => {
+      if (data.status === "success" && data.idToken) {
+        const { error } = await supabase.auth.signInWithIdToken({
+          provider: "google",
+          token: data.idToken,
+        });
+        if (error) {
+          console.error("Supabase signInWithIdToken error:", error.message);
+        }
+      } else {
+        console.error("Median Google Sign-In failed:", data.error);
+      }
+    };
+
+    return () => {
+      delete (window as any).median_social_login_callback;
+    };
   }, []);
 
   return (
