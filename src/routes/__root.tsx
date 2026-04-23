@@ -4,7 +4,7 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { Toaster } from "sonner";
 import { useEffect } from "react";
 import { StatusBar } from "@capacitor/status-bar";
-import { supabase } from "@/integrations/supabase/client";
+
 import appCss from "../styles.css?url";
 
 const queryClient = new QueryClient();
