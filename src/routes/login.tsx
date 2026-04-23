@@ -60,10 +60,35 @@ function LoginPage() {
       navigator.userAgent.toLowerCase().indexOf('median') >= 0;
 
     if (inMedian) {
+      const median = (window as any).median;
+      if (!median?.socialLogin?.google?.login) {
+        toast.error('Google sign-in unavailable in this app version');
+        return;
+      }
       try {
-        (window as any).median?.socialLogin?.google?.login();
-      } catch {
-        toast.error('Google sign-in failed');
+        median.socialLogin.google.login({
+          callback: async (response: MedianGoogleLoginResponse) => {
+            if (response.error) {
+              toast.error(response.error || 'Google sign-in failed');
+              return;
+            }
+            if (!response.idToken) {
+              toast.error('Google sign-in failed: no token returned');
+              return;
+            }
+            const { error } = await supabase.auth.signInWithIdToken({
+              provider: 'google',
+              token: response.idToken,
+            });
+            if (error) {
+              toast.error(error.message || 'Google sign-in failed');
+              return;
+            }
+            navigate({ to: '/' });
+          },
+        });
+      } catch (err: any) {
+        toast.error(err?.message || 'Google sign-in failed');
       }
       return;
     }
