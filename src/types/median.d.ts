@@ -1,16 +1,31 @@
+interface MedianGoogleLoginSuccess {
+  idToken?: string;
+  accessToken?: string;
+  type?: string;
+  userId?: string;
+  userDetails?: {
+    email?: string;
+    name?: string;
+    imageURL?: string;
+  };
+}
+
+interface MedianGoogleLoginError {
+  error: string;
+  type?: string;
+}
+
+type MedianGoogleLoginResponse = MedianGoogleLoginSuccess & Partial<MedianGoogleLoginError>;
+
 interface Window {
   median?: {
     socialLogin: {
       google: {
-        login: () => void;
+        login: (options: {
+          callback: (response: MedianGoogleLoginResponse) => void;
+          scope?: string;
+        }) => void;
       };
     };
   };
-  median_social_login_callback?: (data: {
-    status: string;
-    platform: string;
-    email?: string;
-    idToken?: string;
-    error?: string;
-  }) => void;
 }
