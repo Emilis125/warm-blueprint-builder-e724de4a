@@ -75,18 +75,14 @@ function LoginPage() {
     if (inMedian) {
       const median = (window as any).median;
       if (!median?.socialLogin?.google?.login) {
-        toast.error('Google sign-in unavailable in this app version');
+        toast.error('Google Sign-In is not enabled in this app build. Please update the app.');
         return;
       }
       try {
         median.socialLogin.google.login({
           callback: async (response: MedianGoogleLoginResponse) => {
             if (response.error) {
-              if (response.error.toLowerCase().includes('credential')) {
-                await startWebGoogleAuth();
-                return;
-              }
-              toast.error(response.error || 'Google sign-in failed');
+              toast.error(response.error || 'Google sign-in failed. Make sure Google Sign-In is configured in Median.');
               return;
             }
             if (!response.idToken) {
