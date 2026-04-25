@@ -59,6 +59,19 @@ function LoginPage() {
       typeof navigator !== 'undefined' &&
       navigator.userAgent.toLowerCase().indexOf('median') >= 0;
 
+    const startWebGoogleAuth = async () => {
+      const result = await lovable.auth.signInWithOAuth('google', {
+        redirect_uri: window.location.origin,
+        extraParams: { prompt: 'select_account' },
+      });
+      if (result.error) {
+        toast.error('Google sign-in failed');
+        return;
+      }
+      if (result.redirected) return;
+      navigate({ to: '/' });
+    };
+
     if (inMedian) {
       const median = (window as any).median;
       if (!median?.socialLogin?.google?.login) {
@@ -69,6 +82,10 @@ function LoginPage() {
         median.socialLogin.google.login({
           callback: async (response: MedianGoogleLoginResponse) => {
             if (response.error) {
+              if (response.error.toLowerCase().includes('credential')) {
+                await startWebGoogleAuth();
+                return;
+              }
               toast.error(response.error || 'Google sign-in failed');
               return;
             }
@@ -94,15 +111,7 @@ function LoginPage() {
     }
 
     try {
-      const result = await lovable.auth.signInWithOAuth('google', {
-        redirect_uri: window.location.origin,
-      });
-      if (result.error) {
-        toast.error('Google sign-in failed');
-        return;
-      }
-      if (result.redirected) return;
-      navigate({ to: '/' });
+      await startWebGoogleAuth();
     } catch {
       toast.error('Google sign-in failed');
     }
