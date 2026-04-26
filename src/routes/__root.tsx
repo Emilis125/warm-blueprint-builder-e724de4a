@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/hooks/use-auth";
 import { Toaster } from "sonner";
 import { useEffect } from "react";
-import { StatusBar } from "@capacitor/status-bar";
+import { StatusBar, Style } from "@capacitor/status-bar";
 
 import appCss from "../styles.css?url";
 
@@ -129,15 +129,23 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   useEffect(() => {
-    const hideStatusBar = async () => {
+    const configureStatusBar = async () => {
       try {
-        await StatusBar.hide();
-      } catch (error) {
-        console.log("StatusBar API not available");
+        await StatusBar.setStyle({ style: Style.Dark });
+        await StatusBar.setBackgroundColor({ color: "#0B1120" });
+        // setNavigationBarColor is Android-only and added via separate plugin call
+        const sb = StatusBar as unknown as {
+          setNavigationBarColor?: (opts: { color: string }) => Promise<void>;
+        };
+        if (typeof sb.setNavigationBarColor === "function") {
+          await sb.setNavigationBarColor({ color: "#0B1120" });
+        }
+      } catch {
+        // StatusBar API not available (web)
       }
     };
 
-    hideStatusBar();
+    configureStatusBar();
   }, []);
 
   return (
