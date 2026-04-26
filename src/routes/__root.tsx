@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/hooks/use-auth";
 import { Toaster } from "sonner";
 import { useEffect } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
+import { StatusBar } from "@capacitor/status-bar";
 
 import appCss from "../styles.css?url";
 
@@ -131,14 +131,16 @@ function RootComponent() {
   useEffect(() => {
     const configureStatusBar = async () => {
       try {
-        await StatusBar.setStyle({ style: Style.Dark });
-        await StatusBar.setBackgroundColor({ color: "#0B1120" });
-        // setNavigationBarColor is Android-only and added via separate plugin call
+        await StatusBar.hide();
         const sb = StatusBar as unknown as {
-          setNavigationBarColor?: (opts: { color: string }) => Promise<void>;
+          setOverlaysWebView?: (opts: { overlay: boolean }) => Promise<void>;
+          hideNavigationBar?: () => Promise<void>;
         };
-        if (typeof sb.setNavigationBarColor === "function") {
-          await sb.setNavigationBarColor({ color: "#0B1120" });
+        if (typeof sb.setOverlaysWebView === "function") {
+          await sb.setOverlaysWebView({ overlay: true });
+        }
+        if (typeof sb.hideNavigationBar === "function") {
+          await sb.hideNavigationBar();
         }
       } catch {
         // StatusBar API not available (web)
