@@ -55,11 +55,7 @@ function LoginPage() {
   };
 
   const handleGoogleAuth = async () => {
-    const inMedian =
-      typeof navigator !== 'undefined' &&
-      navigator.userAgent.toLowerCase().indexOf('median') >= 0;
-
-    const startWebGoogleAuth = async () => {
+    try {
       const result = await lovable.auth.signInWithOAuth('google', {
         redirect_uri: window.location.origin,
         extraParams: { prompt: 'select_account' },
@@ -70,44 +66,6 @@ function LoginPage() {
       }
       if (result.redirected) return;
       navigate({ to: '/' });
-    };
-
-    if (inMedian) {
-      const median = (window as any).median;
-      if (!median?.socialLogin?.google?.login) {
-        toast.error('Google Sign-In is not enabled in this app build. Please update the app.');
-        return;
-      }
-      try {
-        median.socialLogin.google.login({
-          callback: async (response: MedianGoogleLoginResponse) => {
-            if (response.error) {
-              toast.error(response.error || 'Google sign-in failed. Make sure Google Sign-In is configured in Median.');
-              return;
-            }
-            if (!response.idToken) {
-              toast.error('Google sign-in failed: no token returned');
-              return;
-            }
-            const { error } = await supabase.auth.signInWithIdToken({
-              provider: 'google',
-              token: response.idToken,
-            });
-            if (error) {
-              toast.error(error.message || 'Google sign-in failed');
-              return;
-            }
-            navigate({ to: '/' });
-          },
-        });
-      } catch (err: any) {
-        toast.error(err?.message || 'Google sign-in failed');
-      }
-      return;
-    }
-
-    try {
-      await startWebGoogleAuth();
     } catch {
       toast.error('Google sign-in failed');
     }
