@@ -139,16 +139,19 @@ function RootComponent() {
         await StatusBar.show();
         await StatusBar.setStyle({ style: Style.Dark });
         await StatusBar.setOverlaysWebView({ overlay: true });
+        // Fully transparent — no tint, no scrim
         await StatusBar.setBackgroundColor({ color: "#00000000" });
         const sb = StatusBar as unknown as {
-          setNavigationBarColor?: (opts: { color: string }) => Promise<void>;
+          setNavigationBarColor?: (opts: { color: string; darkButtons?: boolean }) => Promise<void>;
           showNavigationBar?: () => Promise<void>;
+          setNavigationBarVisible?: (opts: { isVisible: boolean }) => Promise<void>;
         };
         if (typeof sb.showNavigationBar === "function") {
           await sb.showNavigationBar();
         }
         if (typeof sb.setNavigationBarColor === "function") {
-          await sb.setNavigationBarColor({ color: "#00000000" });
+          // darkButtons:false → light icons on transparent bar (no scrim)
+          await sb.setNavigationBarColor({ color: "#00000000", darkButtons: false });
         }
       } catch {
         // StatusBar API not available (web)
