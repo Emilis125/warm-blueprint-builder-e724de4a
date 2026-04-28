@@ -108,10 +108,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
           backgroundColor: "#0D1B3E",
           backgroundAttachment: "fixed",
           minHeight: "100dvh",
-          paddingTop: "env(safe-area-inset-top, 0px)",
-          paddingBottom: "env(safe-area-inset-bottom, 0px)",
-          paddingLeft: "env(safe-area-inset-left, 0px)",
-          paddingRight: "env(safe-area-inset-right, 0px)",
+          margin: 0,
+          padding: 0,
         }}
       >
         {children}
