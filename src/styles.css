@@ -115,19 +115,41 @@
   }
 
   :root {
-    --app-safe-top: 0px;
+    --app-safe-top: env(safe-area-inset-top, 0px);
+    --app-safe-bottom: env(safe-area-inset-bottom, 0px);
+    --app-safe-left: env(safe-area-inset-left, 0px);
+    --app-safe-right: env(safe-area-inset-right, 0px);
+    background-color: #0D1B3E;
+  }
+
+  html {
+    background-color: #0D1B3E;
+    min-height: 100%;
+    min-height: 100dvh;
   }
 
   body {
     background: linear-gradient(160deg, #0D1B3E 0%, #1A1040 50%, #0D2818 100%);
+    background-color: #0D1B3E;
     color: var(--color-foreground);
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'DM Sans', sans-serif;
     min-height: 100vh;
+    min-height: 100dvh;
+    /* Extend background behind safe areas (notch, home indicator) */
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
   }
 
   html, body, #root {
     background: linear-gradient(160deg, #0D1B3E 0%, #1A1040 50%, #0D2818 100%);
+    background-color: #0D1B3E;
     background-attachment: fixed;
+  }
+
+  #root {
+    min-height: 100dvh;
   }
 }
 
