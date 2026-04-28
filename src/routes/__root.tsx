@@ -35,7 +35,7 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "TipTracker Pro" },
       {
         name: "description",
@@ -98,15 +98,20 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" style={{ backgroundColor: "#0D1B3E", minHeight: "100%" }}>
       <head>
         <HeadContent />
       </head>
       <body
         style={{
           background: "linear-gradient(160deg, #0D1B3E 0%, #1A1040 50%, #0D2818 100%)",
+          backgroundColor: "#0D1B3E",
           backgroundAttachment: "fixed",
-          minHeight: "100vh",
+          minHeight: "100dvh",
+          paddingTop: "env(safe-area-inset-top, 0px)",
+          paddingBottom: "env(safe-area-inset-bottom, 0px)",
+          paddingLeft: "env(safe-area-inset-left, 0px)",
+          paddingRight: "env(safe-area-inset-right, 0px)",
         }}
       >
         {children}
